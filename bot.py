@@ -22,19 +22,19 @@ async def on_ready():
             print(f"Cogs.{filename[:-3]}")
     print('구동 시작')
 
-@bot.command(name="로드")
+@bot.command(name="로드", aliases=['모듈로드', 'load', 'ㄹㄷ'])
 @is_owner()
 async def load_commands(ctx, *, extension):
     bot.load_extension(f"Cogs.{extension}")
     await ctx.send(embed=discord.Embed(title='Load', description=f'Successfully Loaded {extension}', color=embedcolor))
 
-@bot.command(name="언로드")
+@bot.command(name="언로드", aliases=['모듈언로드', 'unload', 'ㅇㄹㄷ'])
 @is_owner()
 async def unload_commands(ctx, *, extension):
     bot.unload_extension(f"Cogs.{extension}")
     await ctx.send(embed=discord.Embed(title='Unload', description=f'Successfully Unloaded {extension}', color=embedcolor))
 
-@bot.command(name='리로드')
+@bot.command(name='리로드', aliases=['모듈리로드', 'reload', 'ㄹㄹㄷ'])
 @is_owner()
 async def reload_commands(ctx, *, extension='all'):
     if extension == 'all':
@@ -67,7 +67,7 @@ async def reload_commands(ctx, *, extension='all'):
 @bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.errors.CommandOnCooldown):
-        await warn(ctx=ctx, content="지금 쿨타임에 있어요. `{error.retry_after}`초 후에 다시 시도해 주세요")
+        await warn(ctx=ctx, content=f"지금 쿨타임에 있어요. `{round(error.retry_after, 2)}`초 후에 다시 시도해 주세요")
     elif isinstance(error, commands.CheckFailure):
         await warn(ctx=ctx, content='실행하실 권한이 없는 것 같아요.')
     elif isinstance(error, commands.BadArgument):

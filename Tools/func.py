@@ -1,9 +1,12 @@
 import discord
 from discord.ext import commands
 from Tools.var import mainprefix, embedcolor, errorcolor
+from datetime import datetime, timedelta
+from os.path import isfile, isdir
+from os import makedirs
 from datetime import datetime
-from os.path import isfile
 from pickle import load
+import json
 
 async def sendEmbed(ctx, title, content):
     embed = discord.Embed(title=title, description=content, color=embedcolor)
@@ -25,10 +28,47 @@ async def errorlog(ctx, error, bot):
 async def log(ctx, embed, bot):   
     await (bot.get_channel(808619404240748586)).send(embed=embed)
 
+def getnow(format):
+    utcnow = datetime.utcnow()
+    time_gap = timedelta(hours=9)
+    kor_time = utcnow+ time_gap
+    return str(kor_time.strftime(format))
+
 def is_owner():
     async def predicate(ctx):
         return ctx.author.id == 745848200195473490
     return commands.check(predicate)
+
+def getdata(id, item):
+    if not isdir('data'):
+        makedirs('data')
+    if not isfile(f'data/{id}.json'):
+        with open(f'data/{id}.json', 'w') as f:
+            json.dump({
+                'point': '0',
+                'lastCheck': '',
+                'countCheck': '0',
+                'randomPercent': '0',
+            }, f)
+    with open(f'data/{id}.json', 'r') as f:
+        return json.load(f)[item]
+
+def writedata(id, item, value):
+    if not isdir('data'):
+        makedirs('data')
+    if not isfile(f'data/{id}.json'):
+        with open(f'data/{id}.json', 'w') as f:
+            json.dump({
+                'point': '0',
+                'lastCheck': '',
+                'countCheck': '0',
+                'randomPercent': '0',
+            }, f)
+    with open(f'data/{id}.json', 'r') as f:
+        data = json.load(f)
+    data[item] = value
+    with open(f'data/{id}.json', 'w') as f:
+        json.dump(data, f)
 
 def can_use():
     async def predicate(ctx):

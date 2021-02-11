@@ -12,7 +12,7 @@ class Support(commands.Cog, name='지원'):
     def __init__(self, bot):
         self.bot = bot
         
-    @commands.command(name='봇정보', aliases=['botinfo', '봇'], help='봇의 관한 정보들을 확인합니다')
+    @commands.command(name='봇정보', aliases=['botinfo', '봇', 'ㅂㅈㅂ'], help='봇의 관한 정보들을 확인합니다')
     @can_use()
     async def _botinfo(self, ctx):
         embed = discord.Embed(title='봇정보', color=embedcolor)
@@ -27,7 +27,7 @@ class Support(commands.Cog, name='지원'):
         embed.set_thumbnail(url=self.bot.user.avatar_url)
         await ctx.send(embed=embed)
     
-    @commands.command(name='도움', aliases=['도움말', 'help'], usage='<명령어>', help='명령어들의 도움말을 보여줍니다')
+    @commands.command(name='도움', aliases=['도움말', 'help', 'ㄷㅇ'], usage='<명령어>', help='명령어들의 도움말을 보여줍니다')
     @can_use()
     async def _help(self, ctx, *, arg=None):
         command = self.bot.get_command(str(arg))
@@ -47,12 +47,12 @@ class Support(commands.Cog, name='지원'):
             for i in range(len(cogs)):
                 cogs[i] = self.bot.get_cog(cogs[i])
             embed = discord.Embed(title=f'1/{len(cogs)+1}페이지', description='[]는 필수적인 값을, <>는 필수적이지 않은 값들을 의미합니다. 괄호들은 빼고 입력해 주세요!', color=embedcolor)
-            embed.add_field(name='접두사', value=f'피닉스의 접두사는 `{"`, `".join(prefix)}`입니다')
+            embed.add_field(name='접두사', value=f'{self.bot.user.name}의 접두사는 `{"`, `".join(prefix)}`입니다')
             for i in cogs:
                 embed.add_field(name=i.qualified_name, value=f'```{i.description}```', inline=False)
             helps.append(embed)
             for i in range(len(cogs)):
-                embed = discord.Embed(title=f'{i+2}/{len(cogs)+1} 페이지', color=embedcolor)
+                embed = discord.Embed(title=f'{i+2}/{len(cogs)+1} 페이지 - {cogs[i].qualified_name}', color=embedcolor)
                 for i in cogs[i].get_commands():
                     if i.usage is None:
                         usage = ' '
@@ -104,7 +104,7 @@ class Support(commands.Cog, name='지원'):
                     break
                 n1 = 1 - n1
     
-    @commands.command(name='핑', aliases=['응답속도', 'ping'], help='봇의 현재 연결속도를 알려줍니다')
+    @commands.command(name='핑', aliases=['응답속도', 'ping', 'ㅍ'], help='봇의 현재 연결속도를 알려줍니다')
     @can_use()
     async def _ping(self, ctx):
         ping = round(self.bot.latency*1000)
@@ -114,6 +114,15 @@ class Support(commands.Cog, name='지원'):
         delta = second - first
         delta = round(delta.microseconds/1000)
         await msg.edit(embed=discord.Embed(title='핑', description=f'api 핑: `{ping}`ms\n메시지 핑: `{delta}`ms', color=embedcolor).set_footer(text=f'{ctx.author} | {mainprefix}도움', icon_url=ctx.author.avatar_url))        
+    
+    @commands.command(name='공지', aliases=['공지읽기', 'readpost', 'ㄱㅈ'], usage='<공지 번호>', help='공지를 보여줍니다')
+    @can_use()
+    @commands.cooldown(1.0, 5, commands.BucketType.user)
+    async def _readpost(self, ctx, count:int=None):
+        if count is None:
+            with open('posts/count.txt', 'r') as f:
+                count = int(f.read())
+        
 
 def setup(bot):
     bot.add_cog(Support(bot))

@@ -9,18 +9,18 @@ from PIL import Image
 
 class Main(commands.Cog, name='잡다한것'):
     """
-    잡다한 명령어들이 들어 있는 카테고리입니다. ~~잡것
+    잡다한 명령어들이 들어 있는 카테고리입니다.
     """
     
     def __init__(self, bot):
         self.bot = bot
     
-    @commands.command(name='이모지', aliases=['raw', '이모티콘'], help='이모지의 raw 값을 보여줍니다.', usage='[이모지]')
+    @commands.command(name='이모지', aliases=['raw', '이모티콘', 'ㅇㅁㅈ'], help='이모지의 raw 값을 보여줍니다.', usage='[이모지]')
     @can_use()
     async def _emoji(self, ctx, *, emoji: discord.Emoji):
         await sendEmbed(ctx=ctx, title='이모지', content=f'`{emoji}`: {emoji}')
     
-    @commands.command(name='파일생성', aliases=['makefile', '파일'], help='텍스트를 파일로 만듭니다', usage='<파일제목> [파일내용]')
+    @commands.command(name='파일생성', aliases=['makefile', '파일', 'ㅍㅇ'], help='텍스트를 파일로 만듭니다', usage='<파일제목> [파일내용]')
     @can_use()
     @commands.cooldown(1.0, 3, commands.BucketType.user)
     async def _makefile(self, ctx, title='file.txt', *, content):
@@ -33,7 +33,7 @@ class Main(commands.Cog, name='잡다한것'):
         except: pass
         await sendEmbed(ctx=ctx, title='완료', content='DM으로 파일이 전송되었습니다.\n\n만약 전송되지 않았다면 DM을 차단하지 않았는지 확인해 보세요.')
     
-    @commands.command(name='색깔보기', aliases=['색보기', 'color'], help='RGB로 입력한 색상을 보여줍니다', usage='[R] [G] [B]')
+    @commands.command(name='색깔보기', aliases=['색보기', 'ㅅ', 'color'], help='RGB로 입력한 색상을 보여줍니다', usage='[R] [G] [B]')
     @commands.cooldown(1.0, 5, commands.BucketType.user)
     @can_use()
     async def _seecolor(self, ctx, R: int, G: int, B: int):
