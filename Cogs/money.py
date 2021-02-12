@@ -21,7 +21,7 @@ class Money(commands.Cog, name='경제'):
         if user is None: user = ctx.author
         point = getdata(id=user.id, item='point')
         checks = getdata(id=user.id, item='countCheck')
-        try: percentCheck = str(int(getdata(id=user.id, item='winningRandom')) / int(getdata(id=user.id, item='countRandom')) * 100)
+        try: percentCheck = int(getdata(id=user.id, item='winningRandom')) / int(getdata(id=user.id, item='countRandom')) * 100
         except: percentCheck = 0
         embed = discord.Embed(title=f'{user}', color=embedcolor)
         embed.set_footer(text=f'{ctx.author} | {mainprefix}도움', icon_url=ctx.author.avatar_url)
@@ -32,11 +32,11 @@ class Money(commands.Cog, name='경제'):
         a = ['온라인', '방해 금지', '자리 비움', '오프라인']
         status = statuses[a2.index(str(user.status))] + ' ' + a[a2.index(str(user.status))] 
         embed.add_field(name='유저 상태', value=f'{(["데스크톱", "모바일"])[int(user.is_on_mobile())]}, {status}')
-        embed.add_field(name='봇 여부', value=f'{(["일반", "봇"])[int(user.bot)]} 계정')
+        embed.add_field(name='봇 여부', value=f'{([ "일반", "봇"])[int(user.bot)]} 계정')
         embed.add_field(name='계정 생성일', value=f'{(user.created_at).strftime("%Y년 %m월 %d일")}', inline=False)
         embed.add_field(name='포인트', value=f'`{point}`')
-        embed.add_field(name='승률', value=f'{round(percentCheck)}%')
-        embed.add_field(name='출석 횟수', value=f'{checks}회')
+        embed.add_field(name='승률', value=f'`{round(percentCheck)}`%')
+        embed.add_field(name='출석 횟수', value=f'`{checks}`회')
         await ctx.send(embed=embed)
     
     @commands.command(name='포인트', aliases=['point', '돈', 'ㄷ'], help='자신이 가지고 있는 돈을 보여줍니다.', usage='<유저 닉네임 또는 멘션>')
