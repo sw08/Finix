@@ -25,7 +25,7 @@ async def errorlog(ctx, error, bot):
     embed.add_field(name='오류 내용', value=f'```py\n{error}```')   
     await (bot.get_channel(808619404240748586)).send(embed=embed)
 
-async def log(ctx, embed, bot):   
+async def log(embed, bot):   
     await (bot.get_channel(808619404240748586)).send(embed=embed)
 
 def getnow(format):
@@ -48,7 +48,8 @@ def getdata(id, item):
                 'point': '0',
                 'lastCheck': '',
                 'countCheck': '0',
-                'randomPercent': '0',
+                'winningRandom': '0',
+                'countRandom': '0'
             }, f)
     with open(f'data/{id}.json', 'r') as f:
         return json.load(f)[item]
@@ -62,7 +63,8 @@ def writedata(id, item, value):
                 'point': '0',
                 'lastCheck': '',
                 'countCheck': '0',
-                'randomPercent': '0',
+                'sumRandom': '0',
+                'countRandom': '0'
             }, f)
     with open(f'data/{id}.json', 'r') as f:
         data = json.load(f)

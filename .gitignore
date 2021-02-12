@@ -1,6 +1,10 @@
 .pyc
 __pycache__/
+data
+__pycache__
 *.pyc
 data/
 *.json
 .jsons
+posts
+posts/

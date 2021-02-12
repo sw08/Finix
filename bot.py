@@ -62,7 +62,7 @@ async def reload_commands(ctx, *, extension='all'):
         embed.add_field(name='Loading', value=f'Loading {extension}')
         await msg.edit(embed=embed)
         embed.remove_field(index=0)
-        await msg.edit(embed=discord.Embed(title='Finished', descriptions=f'Reloading {extension} Finished', color=embedcolor))
+        await msg.edit(embed=discord.Embed(title='Finished', description=f'Reloading {extension} Finished', color=embedcolor))
 
 @bot.event
 async def on_command_error(ctx, error):

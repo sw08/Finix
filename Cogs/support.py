@@ -1,8 +1,13 @@
 import discord
 from discord.ext import commands
 from Tools.var import embedcolor, mainprefix, prefix
-from Tools.func import can_use, sendEmbed
+from Tools.func import can_use, sendEmbed, warn
 from datetime import datetime
+from os import makedirs
+from os.path import isfile, isdir
+from EZPaginator import Paginator
+import json
+import pickle
 
 class Support(commands.Cog, name='지원'):
     '''
@@ -33,7 +38,7 @@ class Support(commands.Cog, name='지원'):
         command = self.bot.get_command(str(arg))
         if command is not None:
             embed = discord.Embed(title='도움말', description=f'```{command.help}```', color=embedcolor)
-            embed.add_field(name='사용법', value=f'{arg} {command.usage}', inline=False)
+            embed.add_field(name='사용법', value=f'{mainprefix}{arg} {command.usage}', inline=False)
             if command.aliases != []:
                 embed.add_field(name='또 다른 형태', value=', '.join(command.aliases))
             else:
@@ -65,44 +70,8 @@ class Support(commands.Cog, name='지원'):
                 helps.append(embed)
             for i in range(len(helps)):
                 helps[i] = helps[i].set_footer(text=f'{ctx.author} | {mainprefix}도움', icon_url=ctx.author.avatar_url)
-            n = 0
-            msg = await ctx.send(embed=helps[n])
-            emojis = ['⏮️', '◀️', '▶️', '⏭️', '⏹️']
-            for i in emojis:
-                await msg.add_reaction(i)
-            n1 = 1
-            check = lambda reaction, user: reaction.message == msg and user == ctx.author and reaction.emoji in emojis
-            while True:
-                try:
-                    if n1 == 1: reaction, _ = await self.bot.wait_for('reaction_add', check=check, timeout=30)
-                    else: await self.bot.wait_for('reaction_remove', check=check, timeout=30)
-                except TimeoutError:
-                    try:
-                        await msg.clear_reaction()
-                    except:
-                        await msg.delete()
-                    break
-                if emojis.index(reaction.emoji) == 0:
-                    n = 0
-                    await msg.edit(embed=helps[0])
-                elif emojis.index(reaction.emoji) == 3:
-                    await msg.edit(embed=helps[len(helps)-1])
-                    n = len(helps)-1
-                elif emojis.index(reaction.emoji) == 1:
-                    if n > 0:
-                        await msg.edit(embed=helps[n-1])
-                        n -= 1
-                elif emojis.index(reaction.emoji) == 2:
-                    if n < len(helps)-1:
-                        await msg.edit(embed=helps[n+1])
-                        n += 1
-                else:
-                    try:
-                        await msg.clear_reactions()
-                    except:
-                        await msg.delete()
-                    break
-                n1 = 1 - n1
+            page = Paginator(bot=self.bot, message=await ctx.send(embed=helps[0]), embeds=helps, only=ctx.author, use_extend=True, extended_emojis=['<:leftend:809567692692258847>', '<:left:809567681652981781>', '<:right:809567682164424738>', '<:rightend:809567696307617863>'])
+            await page.start()
     
     @commands.command(name='핑', aliases=['응답속도', 'ping', 'ㅍ'], help='봇의 현재 연결속도를 알려줍니다')
     @can_use()
@@ -118,11 +87,27 @@ class Support(commands.Cog, name='지원'):
     @commands.command(name='공지', aliases=['공지읽기', 'readpost', 'ㄱㅈ'], usage='<공지 번호>', help='공지를 보여줍니다')
     @can_use()
     @commands.cooldown(1.0, 5, commands.BucketType.user)
-    async def _readpost(self, ctx, count:int=None):
-        if count is None:
-            with open('posts/count.txt', 'r') as f:
-                count = int(f.read())
-        
+    async def _readpost(self, ctx):
+        if not isdir('posts'):
+            makedirs('posts')
+        if not isfile('posts/count.bin'):
+            with open('posts/count.bin', 'wb') as f:
+                pickle.dump(0, f)
+        with open('posts/count.bin', 'rb') as f:
+            count = pickle.load(f)
+        if count == 0:
+            await warn(ctx=ctx, content='공지가 없습니다')
+            return
+        embeds = []
+        for i in range(count):
+            with open(f'posts/{i}.json') as f:
+                data = json.loads(f.read())
+                date = data['date']
+                content = data['content']
+                writer = await self.bot.fetch_user(int(data['writer']))
+            embeds.append(discord.Embed(title=f'공지 - {1+i}개/{count}개', description=f'{content}\n\n\n[서포트 서버 들어오기](http://support.finix.kro.kr)\n[피닉스 초대하기](http://invite.finix.kro.kr)\n[피닉스 깃허브](http://github.finix.kro.kr)', color=embedcolor).set_footer(icon_url=writer.avatar_url, text=f'{writer} - {date}'))
+        page = Paginator(bot=self.bot, message=await ctx.send(embed=embeds[0]), embeds=embeds, only=ctx.author, use_extend=True, extended_emojis=['<:leftend:809567692692258847>', '<:left:809567681652981781>', '<:right:809567682164424738>', '<:rightend:809567696307617863>'])
+        await page.start()     
 
 def setup(bot):
     bot.add_cog(Support(bot))

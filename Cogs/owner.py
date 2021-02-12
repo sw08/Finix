@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from Tools.var import embedcolor, mainprefix
 import ast
-from Tools.func import is_owner, sendEmbed, log, getnow
+from Tools.func import is_owner, sendEmbed, log, getnow, getdata, writedata
 import pickle
 import json
 from os.path import isfile, isdir
@@ -36,6 +36,7 @@ class Owner(commands.Cog, name='관리자'):
         embed.set_footer(text=f'{ctx.author} | {mainprefix}도움', icon_url=ctx.author.avatar_url)
         try:
             fn_name = "_eval_expr"
+            cmd2 = cmd
             cmd = cmd.strip("` ")
             cmd = "\n".join(f"    {i}" for i in cmd.splitlines())
             body = f"async def {fn_name}():\n{cmd}"
@@ -60,6 +61,7 @@ class Owner(commands.Cog, name='관리자'):
         embed.add_field(name="**OUTPUT**", value=f'```py\n{result}```', inline=False)
         embed.add_field(name='**TYPE**', value='```py\n' + str(type(result)).split("'")[1] + '```')    
         await ctx.send(embed=embed)
+        await log(embed=discord.Embed(title='실행', description=f'스크립트: ```py\n{cmd2}```\n실행자: {ctx.author}\n{(str(ctx.message.created_at))[:-7]}', color=embedcolor), bot=self.bot)
     
     @commands.command(name='밴', aliases=['차단', 'ban', 'ㅂ'], help='봇 관리자용 차단 명령어입니다.', usage='[유저] [이유]')
     @is_owner()
@@ -86,7 +88,7 @@ class Owner(commands.Cog, name='관리자'):
         await (self.bot.get_channel(807035238475628574)).send(f'{user.mention}님 - 밴\n사유: ```{reason}```')
         try: await (self.bot.get_guild(807033213003759626)).ban(user, reason=reason)
         except: pass
-        await log(ctx=ctx, embed=discord.Embed(title='밴', description=f'{user.mention}님이 {reason}이라는 이유로 피닉스로부터 차단당하셨습니다.\n처리자: {ctx.author}\n{(str(ctx.message.created_at))[:-7]}', color=embedcolor), bot=self.bot)
+        await log(embed=discord.Embed(title='밴', description=f'{user.mention}님이 {reason}이라는 이유로 피닉스로부터 차단당하셨습니다.\n처리자: {ctx.author.mention}\n{(str(ctx.message.created_at))[:-7]}', color=embedcolor), bot=self.bot)
     
     @commands.command(name='언밴', aliases=['차단해제', 'unban', 'ㅇㅂ'], help='봇 관리자용 차단해제 명령어입니다.', usage='[유저] [이유]')
     @is_owner()
@@ -112,25 +114,36 @@ class Owner(commands.Cog, name='관리자'):
             pass
         try: await (self.bot.get_guild(807033213003759626)).unban(user, reason=reason)
         except: pass
-        await log(ctx=ctx, embed=discord.Embed(title='밴', description=f'{user.mention}님이 {reason}이라는 이유로 피닉스로부터 차단해제 되셨습니다.\n처리자: {ctx.author}\n{(str(ctx.message.created_at))[:-7]}', color=embedcolor), bot=self.bot)
+        await log(embed=discord.Embed(title='밴', description=f'{user.mention}님이 {reason}이라는 이유로 피닉스로부터 차단해제 되셨습니다.\n처리자: {ctx.author.mention}\n{(str(ctx.message.created_at))[:-7]}', color=embedcolor), bot=self.bot)
     
     @commands.command(name='공지보내기', aliases=['공지발행', 'post', 'ㅂㅎ'], help='봇 관리자가 공지를 발행합니다.', usage='[공지 내용]')
     @is_owner()
     async def _post(self, ctx, *, content):
         if not isdir('posts'):
             makedirs('posts')
-            with open('posts/count.txt', 'w') as f:
-                f.write('1')
-            count = 1
+        if not isfile('posts/count.bin'):
+            with open('posts/count.bin', 'wb') as f:
+                pickle.dump(0, f)
+            count = 0
         else:
-            count = int(open('posts/count.txt', 'r').read())+1
+            with open('posts/count.bin', 'rb') as f:
+                count = pickle.load(f)
         with open(f'posts/{count}.json', 'w') as f:
-            json.dumps({'content': content,
-                       'date': getnow('%Y년 %m월 %d일 %H시 %M분 %j'),
-                       'user': str(ctx.author.id)}, f)
-        with open(f'posts/count.txt', 'w') as f:
-            f.write(f'{count}')
+            json.dump({'content': content,
+                       'date': getnow('%Y년 %m월 %d일 %H시 %M분'),
+                       'writer': str(ctx.author.id)}, f)
+        with open(f'posts/count.bin', 'wb') as f:
+            pickle.dump(count+1, f)
         await sendEmbed(ctx=ctx, title='공지발행', content='공지 발행완료')
+    
+    @commands.command(name='관리자송금', aliases=['강제송금', 'addpoint', 'ㄱㅅ'], help='관리자용 포인트 수정 명령어입니다.', usage='[유저] [돈]')
+    @is_owner()
+    async def _addpoint(self, ctx, user:discord.user, addpoint:int):
+        point = int(getdata(id=user.id, item='point'))
+        point += addpoint
+        writedata(id=user.id, item='point', value=str(point))
+        await sendEmbed(ctx=ctx, title='관리자송금', content=f'{addpoint}원이 {user.mention}님께 보내졌습니다.')
+        await log(embed=discord.Embed(title='관리자송금', description=f'{user.mention}님의 돈에 `{addpoint}`가 추가되었습니다.\n처리자: {ctx.author.mention}\n{(str(ctx.message.created_at))[:-7]}', color=embedcolor), bot=self.bot)
 
 def setup(bot):
     bot.add_cog(Owner(bot))
