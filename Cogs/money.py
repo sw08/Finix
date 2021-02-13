@@ -14,7 +14,7 @@ class Money(commands.Cog, name='경제'):
     def __init__(self, bot):
         self.bot = bot
     
-    @commands.command(name='정보', aliases=['info', '프로필', 'ㅍㄹㅍ'])
+    @commands.command(name='정보', aliases=['info', '프로필', 'ㅍㄹㅍ'], usage='<유저>', help='유저의 정보를 보여줍니다')
     @commands.cooldown(1.0, 3, commands.BucketType.user)
     @can_use()
     async def _info(self, ctx, user: discord.Member=None):
@@ -23,7 +23,7 @@ class Money(commands.Cog, name='경제'):
         checks = getdata(id=user.id, item='countCheck')
         try: percentCheck = int(getdata(id=user.id, item='winningRandom')) / int(getdata(id=user.id, item='countRandom')) * 100
         except: percentCheck = 0
-        embed = discord.Embed(title=f'{user}', color=embedcolor)
+        embed = discord.Embed(title=f'{user}', description=getdata(id=user.id, item='introduce'), color=embedcolor)
         embed.set_footer(text=f'{ctx.author} | {mainprefix}도움', icon_url=ctx.author.avatar_url)
         embed.set_thumbnail(url=user.avatar_url)
         embed.add_field(name='유저 id', value=f'{user.id}')
@@ -34,7 +34,7 @@ class Money(commands.Cog, name='경제'):
         embed.add_field(name='유저 상태', value=f'{(["데스크톱", "모바일"])[int(user.is_on_mobile())]}, {status}')
         embed.add_field(name='봇 여부', value=f'{([ "일반", "봇"])[int(user.bot)]} 계정')
         embed.add_field(name='계정 생성일', value=f'{(user.created_at).strftime("%Y년 %m월 %d일")}', inline=False)
-        embed.add_field(name='포인트', value=f'`{point}`')
+        embed.add_field(name='포인트', value=f'`{point}`포인트')
         embed.add_field(name='승률', value=f'`{round(percentCheck)}`%')
         embed.add_field(name='출석 횟수', value=f'`{checks}`회')
         await ctx.send(embed=embed)

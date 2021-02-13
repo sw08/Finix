@@ -1,6 +1,6 @@
 from discord.ext import commands
 import discord
-from Tools.func import sendEmbed, can_use, warn
+from Tools.func import sendEmbed, can_use, warn, writedata
 from Tools.var import embedcolor, mainprefix, prefix
 from os import listdir, remove
 from datetime import datetime
@@ -44,6 +44,13 @@ class Main(commands.Cog, name='잡다한것'):
         img.save('color.png')
         await ctx.send(file=discord.File('color.png'))
         remove('color.png')
+    
+    @commands.command(name='소개설정', aliases=['ㅅㄱㅅㅈ', '소개말설정', 'introduce'], help='소개말을 설정합니다. 소개발을 비워 둘시 지워집니다.', usage='<소개말>')
+    @commands.cooldown(1.0, 4, commands.BucketType.user)
+    @can_use()
+    async def _introduce(self, ctx, *, content=''):
+        writedata(id=ctx.author.id, item='introduce', value=content)
+        await sendEmbed(ctx=ctx, title='소개말설정', content=f'{ctx.author.name}님의 소개말이 `{content}`로 변경되었습니다.')
 
 def setup(bot):
     bot.add_cog(Main(bot))
