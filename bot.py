@@ -71,9 +71,13 @@ async def on_command_error(ctx, error):
     elif isinstance(error, commands.CheckFailure):
         await warn(ctx=ctx, content='실행하실 권한이 없는 것 같아요.')
     elif isinstance(error, commands.BadArgument):
-        await warn(ctx=ctx, content='올바른 값을 넣어 주세요')
+        await warn(ctx=ctx, content='올바른 값을 넣어 주세요.')
     elif isinstance(error, commands.MissingRequiredArgument):
-        await warn(ctx=ctx, content='값이 필요합니다')
+        await warn(ctx=ctx, content='값이 필요합니다.')
+    elif isinstance(error, commands.MissingPermissions):
+        await warn(ctx=ctx, content='권한이 없습니다.')
+    elif isinstance(error, commands.CommandNotFound):
+        pass
     else:
         await errorlog(ctx=ctx, error=error, bot=bot)
 

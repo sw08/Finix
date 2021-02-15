@@ -85,6 +85,17 @@ class Money(commands.Cog, name='경제'):
         else:
             writedata(id=ctx.author.id, item='point', value=str(point-amount))
             await sendEmbed(ctx=ctx, title='이런!', content=f'아쉽게도 져서 {amount}포인트를 잃었어요...\n현재 포인트: `{point-amount}`')
+    
+    @commands.command(name='송금', aliases=['돈보내기', 'sendMoney', 'ㅅㄱ'], help='원하는 사람에게 돈을 보냅니다.', usage='[유저] [돈]')
+    @can_use()
+    @commands.cooldown(1.0, 7, commands.BucketType.user)
+    async def _sendmoney(self, ctx, user:discord.User, amount:int):
+        if amount < 50:
+            await warn(ctx=ctx, content='50뭔 이상부터 송금할 수 있습니다')
+            return
+        writedata(id=ctx.author.id, item='point', value=str(int(getdata(id=ctx.author.id, item='point'))-amount))
+        writedata(id=user.id, item='point', value=str(int(getdata(id=user.id, item='point'))+round(amount*0.95)))
+        await sendEmbed(ctx=ctx, title='송금', content=f'`{user}`님께 `{round(amount*0.95)}`포인트가 송금되었습니다.\n수수료: `{amount-round(amount*0.95)}`')
 
 def setup(bot):
     bot.add_cog(Money(bot))
