@@ -1,10 +1,11 @@
 import discord
 from discord.ext import commands
-from Tools.func import can_use, sendEmbed
+from Tools.func import can_use, sendEmbed, warn
+from EZPaginator import Paginator as page
 
 class Develop(commands.Cog, name='개발'):
     '''
-    봇 개발을 돕는 카테고리입니다
+    개발자를 위한 카테고리입니다
     '''
     def __init__(self, bot):
         self.bot = bot

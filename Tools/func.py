@@ -50,7 +50,9 @@ def getdata(id, item):
                 'countCheck': '0',
                 'winningRandom': '0',
                 'countRandom': '0',
-                'introduce': ' '
+                'introduce': ' ',
+                'commandCount': '0',
+                'xp': '0'
             }, f)
     with open(f'data/{id}.json', 'r') as f:
         return json.load(f)[item]
@@ -66,7 +68,9 @@ def writedata(id, item, value):
                 'countCheck': '0',
                 'sumRandom': '0',
                 'countRandom': '0',
-                'introduce': ' '
+                'introduce': ' ',
+                'commandCount': '0',
+                'xp': '0'
             }, f)
     with open(f'data/{id}.json', 'r') as f:
         data = json.load(f)
