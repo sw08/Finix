@@ -101,7 +101,8 @@ class Money(commands.Cog, name='경제'):
     
     @commands.Cog.listener()
     async def on_message(self, message):
-        writedata(id=message.author.id, item='xp', value=str(randint(1, 5) + int(getdata(id=message.author.id, item='xps'))))
+        if message.author.bot: return
+        writedata(id=message.author.id, item='xp', value=str(randint(1, 5) + int(getdata(id=message.author.id, item='xp'))))
 
 def setup(bot):
     bot.add_cog(Money(bot))

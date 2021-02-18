@@ -61,8 +61,7 @@ class Owner(commands.Cog, name='관리자'):
         embed.add_field(name="**OUTPUT**", value=f'```py\n{result}```', inline=False)
         embed.add_field(name='**TYPE**', value='```py\n' + str(type(result)).split("'")[1] + '```')    
         await ctx.send(embed=embed)
-        await log(embed=discord.Embed(title='실행', description=f'스크립트: ```py\n{cmd2}```\n실행자: {ctx.author}\n{(str(ctx.message.created_at))[:-7]}', color=embedcolor), bot=self.bot)
-    
+   
     @commands.command(name='밴', aliases=['차단', 'ban', 'ㅂ'], help='봇 관리자용 차단 명령어입니다.', usage='[유저] [이유]')
     @is_owner()
     async def _ban(self, ctx, user: discord.User, *, reason):
