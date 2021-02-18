@@ -34,6 +34,8 @@ class Money(commands.Cog, name='경제'):
         embed.add_field(name='유저 상태', value=f'{(["데스크톱", "모바일"])[int(user.is_on_mobile())]}, {status}')
         embed.add_field(name='봇 여부', value=f'{([ "일반", "봇"])[int(user.bot)]} 계정')
         embed.add_field(name='계정 생성일', value=f'{(user.created_at).strftime("%Y년 %m월 %d일")}', inline=False)
+        embed.add_field(name='레벨', value=f'`{round(getdata(id=user.id, item="xp") / 37.5)}`레벨 `({getdata(id=user.id, item="xp")})`')
+        embed.add_field(name='명령어 사용 횟수', value=f'`{getdata(id=user.id, item="commandCount")}`회', inline=False)
         embed.add_field(name='포인트', value=f'`{point}`포인트')
         embed.add_field(name='승률', value=f'`{round(percentCheck)}`%')
         embed.add_field(name='출석 횟수', value=f'`{checks}`회')
@@ -96,6 +98,10 @@ class Money(commands.Cog, name='경제'):
         writedata(id=ctx.author.id, item='point', value=str(int(getdata(id=ctx.author.id, item='point'))-amount))
         writedata(id=user.id, item='point', value=str(int(getdata(id=user.id, item='point'))+round(amount*0.95)))
         await sendEmbed(ctx=ctx, title='송금', content=f'`{user}`님께 `{round(amount*0.95)}`포인트가 송금되었습니다.\n수수료: `{amount-round(amount*0.95)}`')
+    
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        writedata(id=message.author.id, item='xp', value=str(randint(1, 5) + int(getdata(id=message.author.id, item='xps'))))
 
 def setup(bot):
     bot.add_cog(Money(bot))
