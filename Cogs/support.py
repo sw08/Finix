@@ -49,24 +49,25 @@ class Support(commands.Cog, name='지원'):
         else:
             helps = []
             cogs = [i for i in self.bot.cogs]
+            del cogs[cogs.index('Listener')]
             for i in range(len(cogs)):
                 cogs[i] = self.bot.get_cog(cogs[i])
             embed = discord.Embed(title=f'1/{len(cogs)+1}페이지', description='[]는 필수적인 값을, <>는 필수적이지 않은 값들을 의미합니다. 괄호들은 빼고 입력해 주세요!', color=embedcolor)
             embed.add_field(name='접두사', value=f'{self.bot.user.name}의 접두사는 `{"`, `".join(prefix)}`입니다')
             for i in cogs:
-                embed.add_field(name=i.qualified_name, value=f'```{i.description}```', inline=False)
+                embed.add_field(name=f'**{i.qualified_name}**', value=f'`{i.description}`', inline=False)
             helps.append(embed)
             for i in range(len(cogs)):
                 embed = discord.Embed(title=f'{i+2}/{len(cogs)+1} 페이지 - {cogs[i].qualified_name}', color=embedcolor)
                 for i in cogs[i].get_commands():
                     if i.usage is None:
-                        usage = ' '
+                        usage = ''
                     else:
                         usage = i.usage
                     if i.help is None:
-                        embed.add_field(name=f'**{i.name}**', value=f'```{mainprefix}{i.name} {usage}```', inline=False)
+                        embed.add_field(name=f'\n**{i.name}**', value=f'`{mainprefix}{i.name} {usage}`\n', inline=False)
                     else:
-                        embed.add_field(name=f'**{i.name}**', value=f'```{mainprefix}{i.name} {usage}\n{i.help}```', inline=False)
+                        embed.add_field(name=f'\n**{i.name}**', value=f'`{mainprefix}{i.name} {usage}`\n{i.help}\n', inline=False)
                 helps.append(embed)
             for i in range(len(helps)):
                 helps[i] = helps[i].set_footer(text=f'{ctx.author} | {mainprefix}도움', icon_url=ctx.author.avatar_url)

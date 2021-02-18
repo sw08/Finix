@@ -32,22 +32,23 @@ class Money(commands.Cog, name='경제'):
         a = ['온라인', '방해 금지', '자리 비움', '오프라인']
         status = statuses[a2.index(str(user.status))] + ' ' + a[a2.index(str(user.status))] 
         embed.add_field(name='유저 상태', value=f'{(["데스크톱", "모바일"])[int(user.is_on_mobile())]}, {status}')
-        embed.add_field(name='봇 여부', value=f'{([ "일반", "봇"])[int(user.bot)]} 계정')
+        embed.add_field(name='봇 여부', value=f'{([ "👤", "🤖"])[int(user.bot)]} 계정')
         embed.add_field(name='계정 생성일', value=f'{(user.created_at).strftime("%Y년 %m월 %d일")}', inline=False)
-        embed.add_field(name='레벨', value=f'`{round(getdata(id=user.id, item="xp") / 37.5)}`레벨 `({getdata(id=user.id, item="xp")})`')
-        embed.add_field(name='명령어 사용 횟수', value=f'`{getdata(id=user.id, item="commandCount")}`회', inline=False)
-        embed.add_field(name='포인트', value=f'`{point}`포인트')
-        embed.add_field(name='승률', value=f'`{round(percentCheck)}`%')
-        embed.add_field(name='출석 횟수', value=f'`{checks}`회')
+        if not user.bot:
+            embed.add_field(name='레벨', value=f'`{getdata(id=user.id, item="level")}`레벨 `({getdata(id=user.id, item="xp")})`')
+            embed.add_field(name='명령어 사용 횟수', value=f'`{getdata(id=user.id, item="commandCount")}`회')
+            embed.add_field(name='포인트', value=f'💵 `{point}`포인트')
+            embed.add_field(name='승률', value=f'`{round(percentCheck)}`%')
+            embed.add_field(name='출석 횟수', value=f'`{checks}`회')
         await ctx.send(embed=embed)
     
     @commands.command(name='포인트', aliases=['point', '돈', 'ㄷ'], help='자신이 가지고 있는 돈을 보여줍니다.', usage='<유저 닉네임 또는 멘션>')
     @commands.cooldown(1.0, 5, commands.BucketType.user)
     @can_use()
     async def _point(self, ctx, user: discord.User=None):
-        if user is None: user = ctx.author
+        if user is None or user.bot: user = ctx.author
         point = int(getdata(id=user.id, item='point'))
-        await sendEmbed(ctx=ctx, title='돈', content=f'`{user}`님의 돈: `{point}`원')
+        await sendEmbed(ctx=ctx, title='💵 돈 💵', content=f'`{user}`님의 돈: `{point}`원')
     
     @commands.command(name='출석', aliases=['ㅊ', '체크', 'check'], help='출석을 해 돈을 받습니다.')
     @commands.cooldown(1.0, 15, commands.BucketType.user)
@@ -59,6 +60,7 @@ class Money(commands.Cog, name='경제'):
             return
         point = str(int(getdata(id=ctx.author.id, item='point')) + 50 * randint(2, 4))
         writedata(id=ctx.author.id, item='point', value=point)
+        writedata(id=ctx.author.id, item='coundCheck', value=str(1+int(getdata(id=ctx.author.id, item='countCheck'))))
         writedata(id=ctx.author.id, item='lastCheck', value=date)
         await sendEmbed(ctx=ctx, title='출석', content=f'출석 완료되었습니다.\n현재 포인트: `{point}`')
     
@@ -86,7 +88,7 @@ class Money(commands.Cog, name='경제'):
             await sendEmbed(ctx=ctx, title='휴...', content='이기진 못했지만 다행히 잃지는 않았어요!')
         else:
             writedata(id=ctx.author.id, item='point', value=str(point-amount))
-            await sendEmbed(ctx=ctx, title='이런!', content=f'아쉽게도 져서 {amount}포인트를 잃었어요...\n현재 포인트: `{point-amount}`')
+            await sendEmbed(ctx=ctx, title='이런!', content=f'아쉽게도 져서 💵 {amount}만큼 잃었어요...\n현재 포인트: `{point-amount}`')
     
     @commands.command(name='송금', aliases=['돈보내기', 'sendMoney', 'ㅅㄱ'], help='원하는 사람에게 돈을 보냅니다.', usage='[유저] [돈]')
     @can_use()
@@ -95,14 +97,11 @@ class Money(commands.Cog, name='경제'):
         if amount < 50:
             await warn(ctx=ctx, content='50뭔 이상부터 송금할 수 있습니다')
             return
+        if user.bot:
+            return await warn(ctx=ctx, content='봇에게는 송금할 수 없습니다')
         writedata(id=ctx.author.id, item='point', value=str(int(getdata(id=ctx.author.id, item='point'))-amount))
         writedata(id=user.id, item='point', value=str(int(getdata(id=user.id, item='point'))+round(amount*0.95)))
-        await sendEmbed(ctx=ctx, title='송금', content=f'`{user}`님께 `{round(amount*0.95)}`포인트가 송금되었습니다.\n수수료: `{amount-round(amount*0.95)}`')
-    
-    @commands.Cog.listener()
-    async def on_message(self, message):
-        if message.author.bot: return
-        writedata(id=message.author.id, item='xp', value=str(randint(1, 5) + int(getdata(id=message.author.id, item='xp'))))
+        await sendEmbed(ctx=ctx, title='💵 송금 💵', content=f'`{user}`님께 💵 `{round(amount*0.95)}`만큼 송금되었습니다.\n수수료: 💵 `{amount-round(amount*0.95)}`')
 
 def setup(bot):
     bot.add_cog(Money(bot))

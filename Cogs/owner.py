@@ -36,7 +36,6 @@ class Owner(commands.Cog, name='관리자'):
         embed.set_footer(text=f'{ctx.author} | {mainprefix}도움', icon_url=ctx.author.avatar_url)
         try:
             fn_name = "_eval_expr"
-            cmd2 = cmd
             cmd = cmd.strip("` ")
             cmd = "\n".join(f"    {i}" for i in cmd.splitlines())
             body = f"async def {fn_name}():\n{cmd}"
@@ -61,7 +60,7 @@ class Owner(commands.Cog, name='관리자'):
         embed.add_field(name="**OUTPUT**", value=f'```py\n{result}```', inline=False)
         embed.add_field(name='**TYPE**', value='```py\n' + str(type(result)).split("'")[1] + '```')    
         await ctx.send(embed=embed)
-   
+    
     @commands.command(name='밴', aliases=['차단', 'ban', 'ㅂ'], help='봇 관리자용 차단 명령어입니다.', usage='[유저] [이유]')
     @is_owner()
     async def _ban(self, ctx, user: discord.User, *, reason):
