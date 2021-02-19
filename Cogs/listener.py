@@ -3,19 +3,13 @@ from discord.ext import commands
 from Tools.func import writedata, getdata, sendEmbed
 from random import randint
 from Tools.var import embedcolor
+from os.path import isdir, isfile
+from os import makedirs
+import json
 
 class Listener(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        
-    @commands.Cog.listener()
-    async def on_message(self, message):
-        if message.author.bot: return
-        level = getdata(id=message.author.id, item='level')
-        writedata(id=message.author.id, item='xp', value=str(randint(1, 5) + int(getdata(id=message.author.id, item='xp'))))
-        if int(level) < (int(getdata(id=message.author.id, item='xp')) // 50):
-            await sendEmbed(ctx=(await self.bot.get_context(message)), title='레벨 업!', content=f'{message.author.mention}님이 {int(level)+1}레벨이 되었습니다!')
-            writedata(id=message.author.id, item='level', value=str(int(level)+1))
 
     @commands.Cog.listener()
     async def on_command_completion(self, ctx):
@@ -29,6 +23,15 @@ class Listener(commands.Cog):
         embed.set_thumbnail(url=guild.icon_url)
         embed.set_footer(icon_url=guild.owner.avatar_url, text=f'{guild.owner}')
         await (self.bot.get_channel(808619404240748586)).send(embed=embed)
+        if not isdir('level'): makedirs('level')
+        if isfile('level/guilds.json'):
+            with open('level/guilds.json', 'r') as f:
+                data = json.load(f)
+        else:
+            data = {}
+        data[str(guild.id)] = 'on'
+        with open('level/guilds.json', 'w') as f:
+            json.dump(data, f)
         
     @commands.Cog.listener()
     async def on_guild_remove(self, guild):

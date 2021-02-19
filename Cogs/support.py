@@ -39,7 +39,9 @@ class Support(commands.Cog, name='지원'):
         command = self.bot.get_command(str(arg))
         if command is not None:
             embed = discord.Embed(title='도움말', description=f'```{command.help}```', color=embedcolor)
-            embed.add_field(name='사용법', value=f'{mainprefix}{arg} {command.usage}', inline=False)
+            if command.usage is None: usage = ''
+            else: usage = command.usage
+            embed.add_field(name='사용법', value=f'{mainprefix}{arg} {usage}', inline=False)
             if command.aliases != []:
                 embed.add_field(name='또 다른 형태', value=', '.join(command.aliases))
             else:

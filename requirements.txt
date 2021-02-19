@@ -1,4 +1,3 @@
 EZPaginator
-discord.py
-ast
+discord
 pillow
