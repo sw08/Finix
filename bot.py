@@ -1,10 +1,11 @@
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 from pickle import load
-from Tools.var import prefix, embedcolor, mainprefix
+from Tools.var import prefix, embedcolor, mainprefix, version
 from Tools.func import warn, errorlog, is_owner
 from datetime import datetime
 from os import listdir, chdir
+import asyncio
 
 with open('token.bin', 'rb') as f:
     token = load(f)
@@ -15,6 +16,14 @@ bot.remove_command('help')
 if 'Finix' in listdir():
     chdir('Finix')
 
+async def bt():
+    await bot.wait_until_ready()
+    while not bot.is_closed():
+        games = [f'{len(bot.guilds)}개의 서버에서 활동', f'{len(bot.users)}명의 유저들과 활동', f'{mainprefix}도움', f'피닉스 {version}']
+        for g in games:
+            await bot.change_presence(status=discord.Status.online, activity=discord.Game(g))
+            await asyncio.sleep(5)
+
 @bot.event
 async def on_ready():
     for filename in listdir("Cogs"):
@@ -22,7 +31,10 @@ async def on_ready():
             bot.load_extension(f"Cogs.{filename[:-3]}")
             print(f"Cogs.{filename[:-3]}")
     print('구동 시작')
-    await bot.change_presence(status=discord.Status.online, activity=discord.Game(f'{mainprefix}도움'))
+    await bot.change_presence(
+        status=discord.Status.online,
+        activity=await bt()
+    )
 
 @bot.command(name="로드", aliases=['모듈로드', 'load', 'ㄹㄷ'])
 @is_owner()
