@@ -40,6 +40,8 @@ class Money(commands.Cog, name='경제'):
             embed.add_field(name='포인트', value=f'💵 `{point}`포인트')
             embed.add_field(name='승률', value=f'`{round(percentCheck)}`%')
             embed.add_field(name='출석 횟수', value=f'`{checks}`회')
+        else:
+            embed.add_field(name='인증 여부', value=f{(["<:bot:812119117711933461>", "<:verified_bot:812119144731902013>"])[int(user.public_flags.verified_bot)]}')'
         await ctx.send(embed=embed)
     
     @commands.command(name='포인트', aliases=['point', '돈', 'ㄷ'], help='자신이 가지고 있는 돈을 보여줍니다.', usage='<유저 닉네임 또는 멘션>')

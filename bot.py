@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 from pickle import load
-from Tools.var import prefix, embedcolor
+from Tools.var import prefix, embedcolor, mainprefix
 from Tools.func import warn, errorlog, is_owner
 from datetime import datetime
 from os import listdir, chdir
@@ -21,6 +21,7 @@ async def on_ready():
             bot.load_extension(f"Cogs.{filename[:-3]}")
             print(f"Cogs.{filename[:-3]}")
     print('구동 시작')
+    await bot.change_presence(status=discord.Status.online, activity=discord.Game(f'{mainprefix}도움'))
 
 @bot.command(name="로드", aliases=['모듈로드', 'load', 'ㄹㄷ'])
 @is_owner()

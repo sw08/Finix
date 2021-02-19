@@ -27,7 +27,8 @@ class Support(commands.Cog, name='지원'):
         embed.add_field(name='개발자', value=f'{await self.bot.fetch_user(745848200195473490)}, id 745848200195473490', inline=False)
         embed.add_field(name='버전', value='1.0.0', inline=False)
         embed.add_field(name='개발 언어 및 라이브러리', value='파이썬, discord.py', inline=False)
-        embed.add_field(name='크레딧', value='Team Orora, huntingbear21#4317, 3.141592#7499, sonix18#5414 등 많은 분들')
+        embed.add_field(name='크레딧', value='Team Orora, huntingbear21#4317, 3.141592#7499, 심심러#1000 등 많은 분들', inline=False)
+        embed.add_field(name='초대', value='[서포트 서버 초대](http://support.finix.kro.kr)\n\n[피닉스 초대](http://invite.finix.kro.kr)')
         embed.set_footer(text=f'{ctx.author} | {mainprefix}도움', icon_url=ctx.author.avatar_url)
         embed.set_thumbnail(url=self.bot.user.avatar_url)
         await ctx.send(embed=embed)
@@ -52,7 +53,7 @@ class Support(commands.Cog, name='지원'):
             del cogs[cogs.index('Listener')]
             for i in range(len(cogs)):
                 cogs[i] = self.bot.get_cog(cogs[i])
-            embed = discord.Embed(title=f'1/{len(cogs)+1}페이지', description='[]는 필수적인 값을, <>는 필수적이지 않은 값들을 의미합니다. 괄호들은 빼고 입력해 주세요!', color=embedcolor)
+            embed = discord.Embed(title=f'1/{len(cogs)+1}페이지 - 카테고리 목록', description='[]는 필수적인 값을, <>는 필수적이지 않은 값들을 의미합니다. 괄호들은 빼고 입력해 주세요!', color=embedcolor)
             embed.add_field(name='접두사', value=f'{self.bot.user.name}의 접두사는 `{"`, `".join(prefix)}`입니다')
             for i in cogs:
                 embed.add_field(name=f'**{i.qualified_name}**', value=f'`{i.description}`', inline=False)
@@ -63,11 +64,11 @@ class Support(commands.Cog, name='지원'):
                     if i.usage is None:
                         usage = ''
                     else:
-                        usage = i.usage
+                        usage = ' ' + i.usage
                     if i.help is None:
-                        embed.add_field(name=f'\n**{i.name}**', value=f'`{mainprefix}{i.name} {usage}`\n', inline=False)
+                        embed.add_field(name=f'\n**{i.name}**', value=f'`{mainprefix}{i.name}{usage}`\n', inline=False)
                     else:
-                        embed.add_field(name=f'\n**{i.name}**', value=f'`{mainprefix}{i.name} {usage}`\n{i.help}\n', inline=False)
+                        embed.add_field(name=f'\n**{i.name}**', value=f'`{mainprefix}{i.name}{usage}`\n{i.help}\n', inline=False)
                 helps.append(embed)
             for i in range(len(helps)):
                 helps[i] = helps[i].set_footer(text=f'{ctx.author} | {mainprefix}도움', icon_url=ctx.author.avatar_url)
@@ -85,7 +86,7 @@ class Support(commands.Cog, name='지원'):
         delta = round(delta.microseconds/1000)
         await msg.edit(embed=discord.Embed(title='핑', description=f'api 핑: `{ping}`ms\n메시지 핑: `{delta}`ms', color=embedcolor).set_footer(text=f'{ctx.author} | {mainprefix}도움', icon_url=ctx.author.avatar_url))        
     
-    @commands.command(name='공지', aliases=['공지읽기', 'readpost', 'ㄱㅈ'], usage='<공지 번호>', help='공지를 보여줍니다')
+    @commands.command(name='공지', aliases=['공지읽기', 'readpost', 'ㄱㅈ'], help='공지를 보여줍니다')
     @can_use()
     @commands.cooldown(1.0, 5, commands.BucketType.user)
     async def _readpost(self, ctx):
@@ -108,7 +109,16 @@ class Support(commands.Cog, name='지원'):
                 writer = await self.bot.fetch_user(int(data['writer']))
             embeds.append(discord.Embed(title=f'공지 - {1+i}개/{count}개', description=f'{content}\n\n\n[서포트 서버 들어오기](http://support.finix.kro.kr)\n[피닉스 초대하기](http://invite.finix.kro.kr)\n[피닉스 깃허브](http://github.finix.kro.kr)', color=embedcolor).set_footer(icon_url=writer.avatar_url, text=f'{writer} - {date}'))
         page = Paginator(bot=self.bot, message=await ctx.send(embed=embeds[0]), embeds=embeds, only=ctx.author, use_extend=True, extended_emojis=['<:leftend:809567692692258847>', '<:left:809567681652981781>', '<:right:809567682164424738>', '<:rightend:809567696307617863>'])
-        await page.start()     
+        await page.start()
+    
+    @commands.command(name='초대', aliases=['ㅊㄷ', 'invite', '링크'], help='봇과 서포트 서버, 그리고 이 서버의 초대를 보여줍니다.')
+    @can_use()
+    async def _invite(self, ctx):
+        try:
+            invite = '[현재 서버 초대](' + (await ctx.guild.channels[0].create_invite()).url + ')'
+        except:
+            invite = ''
+        await sendEmbed(ctx=ctx, title='초대', content=f'[서포트 서버 초대](http://support.finix.kro.kr)\n\n[피닉스 초대](http://invite.finix.kro.kr)\n\n{invite}')
 
 def setup(bot):
     bot.add_cog(Support(bot))

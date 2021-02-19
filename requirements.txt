@@ -1,0 +1,4 @@
+EZPaginator
+discord.py
+ast
+pillow
