@@ -12,7 +12,8 @@ with open('token.bin', 'rb') as f:
 bot = commands.Bot(command_prefix=prefix, intents=discord.Intents.all())
 bot.remove_command('help')
 
-chdir('Finix')
+if 'Finix' in listdir():
+    chdir('Finix')
 
 @bot.event
 async def on_ready():
