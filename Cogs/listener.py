@@ -46,7 +46,7 @@ class Listener(commands.Cog):
         if message.author.bot or type(message.channel) != discord.DMChannel: return
         category = self.bot.get_channel(812625850565525525)
         channels = [i.name for i in category.channels]
-        print(channels)
+        await message.add_reaction('<a:CheckGIF2:808647121061675049>')
         if str(message.author.id) in channels:
             userChannel = category.channels[channels.index(str(message.author.id))]
         else:
