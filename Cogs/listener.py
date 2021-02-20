@@ -13,8 +13,8 @@ class Listener(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_completion(self, ctx):
-        if ctx.message.author.bot: return
-        writedata(id=ctx.message.author.id, item='commandCount', value=str(1 + int(getdata(id=ctx.message.author.id, item='commandCount'))))
+        if ctx.author.bot: return
+        writedata(id=ctx.author.id, item='commandCount', value=str(1 + int(getdata(id=ctx.author.id, item='commandCount'))))
     
     @commands.Cog.listener()
     async def on_guild_join(self, guild):

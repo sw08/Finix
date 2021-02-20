@@ -35,7 +35,7 @@ class Level(commands.Cog, name='레벨링'):
         level = xp // 50
         xp += randint(1, 4)
         with open(f'level/{message.guild.id}/{message.author.id}.bin', 'w') as f:
-            pickle.dump(xp)
+            pickle.dump(xp, f)
         if xp // 50 > level:
             await sendEmbed(ctx=await self.bot.get_context(message), title='레벨 업!', content=f'{message.author.mention}님이 {int(level)+1}레벨이 되었습니다!')
     
