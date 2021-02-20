@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from Tools.var import embedcolor, mainprefix
 import ast
-from Tools.func import is_owner, sendEmbed, log, getnow, getdata, writedata
+from Tools.func import is_owner, sendEmbed, log, getnow, getdata, writedata, warn
 import pickle
 import json
 from os.path import isfile, isdir
@@ -142,6 +142,23 @@ class Owner(commands.Cog, name='관리자'):
         writedata(id=user.id, item='point', value=str(point))
         await sendEmbed(ctx=ctx, title='관리자송금', content=f'{addpoint}원이 {user.mention}님께 보내졌습니다.')
         await log(embed=discord.Embed(title='관리자송금', description=f'{user.mention}님의 돈에 `{addpoint}`가 추가되었습니다.\n처리자: {ctx.author.mention}\n{(str(ctx.message.created_at))[:-7]}', color=embedcolor), bot=self.bot)
+    
+    @commands.command(name='답변', aliases=['ㅁㅇㄷㅂ', '문의답변', 'answer'], help='관리자용 DM으로 온 문의에 답변하는 명령어입니다.', usage='[답변할 내용]')
+    @is_owner()
+    async def _answer(self, ctx, *, answer=None):
+        if ctx.channel.category_id != 812625850565525525:
+            return await warn(ctx=ctx, content='문의채널이 아닙니다')
+        if answer is not None: return await (await (self.bot.get_user(int(ctx.channel.name))).create_dm()).send(f'{ctx.author.mention}: ```{answer.content}```')
+        answer = ''
+        await sendEmbed(ctx=ctx, title='답변 시작', content='답변 내용을 입력해 주세요')
+        channel = await (self.bot.get_user(int(ctx.channel.name))).create_dm()
+        while True:
+            answer = await self.bot.wait_for('message', check=lambda m: m.channel == ctx.channel and m.author == ctx.author)
+            if answer.content == '문의종료':
+                await channel.send('문의가 종료되었습니다.')
+                return await ctx.send('문의 끝')
+            await channel.send(f'{ctx.author.mention}: ```{answer}```')
+            await answer.add_reaction('<a:CheckGIF2:808647121061675049>')
 
 def setup(bot):
     bot.add_cog(Owner(bot))

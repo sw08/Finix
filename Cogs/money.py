@@ -90,7 +90,7 @@ class Money(commands.Cog, name='경제'):
             await warn(ctx=ctx, content='걸 돈을 제대로 넣어 주세요.')
             return
         if int(point) < amount:
-            await warn(ctx=ctx, content='돈이 부족합니다.')
+            return await warn(ctx=ctx, content='돈이 부족합니다.')
         result = randint(-1, 1)
         writedata(id=ctx.author.id, item='countRandom', value=str(int(getdata(id=ctx.author.id, item='countRandom'))+1))
         if result == 1:

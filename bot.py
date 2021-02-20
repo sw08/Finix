@@ -16,13 +16,13 @@ bot.remove_command('help')
 if 'Finix' in listdir():
     chdir('Finix')
 
-async def bt():
+async def presence():
     await bot.wait_until_ready()
     while not bot.is_closed():
-        games = [f'{len(bot.guilds)}개의 서버에서 활동', f'{len(bot.users)}명의 유저들과 활동', f'{mainprefix}도움', f'피닉스 {version}']
-        for g in games:
-            await bot.change_presence(status=discord.Status.online, activity=discord.Game(g))
-            await asyncio.sleep(5)
+        messages = [f'{len(bot.guilds)}개의 서버에서 활동', f'{len(bot.users)}명의 유저들과 활동', f'{mainprefix}도움', f'피닉스 {version}', 'DM으로 문의하세요']
+        for i in messages:
+            await bot.change_presence(status=discord.Status.online, activity=discord.Game(i))
+            await asyncio.sleep(3)
 
 @bot.event  
 async def on_ready():
@@ -31,10 +31,7 @@ async def on_ready():
             bot.load_extension(f"Cogs.{filename[:-3]}")
             print(f"Cogs.{filename[:-3]}")
     print('구동 시작')
-    await bot.change_presence(
-        status=discord.Status.online,
-        activity=await bt()
-    )
+    await bot.change_presence(status=discord.Status.online, activity=(await presence()))
 
 @bot.command(name="로드", aliases=['모듈로드', 'load', 'ㄹㄷ'])
 @is_owner()
@@ -85,7 +82,7 @@ async def on_command_error(ctx, error):
     if isinstance(error, commands.errors.CommandOnCooldown):
         await warn(ctx=ctx, content=f"지금 쿨타임에 있어요. `{round(error.retry_after, 2)}`초 후에 다시 시도해 주세요")
     elif isinstance(error, commands.CheckFailure):
-        await warn(ctx=ctx, content='실행하실 권한이 없는 것 같아요.')
+        await warn(ctx=ctx, content='실행하실 조건이 충족되지 않았습니다')
     elif isinstance(error, commands.BadArgument):
         await warn(ctx=ctx, content='올바른 값을 넣어 주세요.')
     elif isinstance(error, commands.MissingRequiredArgument):

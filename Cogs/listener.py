@@ -5,7 +5,7 @@ from random import randint
 from Tools.var import embedcolor
 from os.path import isdir, isfile
 from os import makedirs
-import json
+import json, datetime
 
 class Listener(commands.Cog):
     def __init__(self, bot):
@@ -40,6 +40,18 @@ class Listener(commands.Cog):
         embed.set_thumbnail(url=guild.icon_url)
         embed.set_footer(icon_url=guild.owner.avatar_url, text=f'{guild.owner}')
         await (self.bot.get_channel(808619404240748586)).send(embed=embed)
+    
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if message.author.bot or type(message.channel) != discord.DMChannel: return
+        category = self.bot.get_channel(812625850565525525)
+        channels = [i.name for i in category.channels]
+        print(channels)
+        if str(message.author.id) in channels:
+            userChannel = category.channels[channels.index(str(message.author.id))]
+        else:
+            userChannel = await category.create_text_channel(name=str(message.author.id))
+        await userChannel.send(f'{message.author.mention}: ```{message.content}```')
 
 def setup(bot):
     bot.add_cog(Listener(bot))
