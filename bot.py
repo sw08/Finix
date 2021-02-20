@@ -24,7 +24,7 @@ async def bt():
             await bot.change_presence(status=discord.Status.online, activity=discord.Game(g))
             await asyncio.sleep(5)
 
-@bot.event
+@bot.event  
 async def on_ready():
     for filename in listdir("Cogs"):
         if filename.endswith(".py"):    
@@ -56,11 +56,13 @@ async def reload_commands(ctx, *, extension='all'):
         msg = await ctx.send(embed=embed)
         for i in listdir('Cogs'):
             if i.endswith('.py'):
-                bot.unload_extension(f'Cogs.{i[:-3]}')
+                try: bot.unload_extension(f'Cogs.{i[:-3]}')
+                except: pass
                 embed.add_field(name='Unloading', value=f'Unloading {i[:-3]}')
                 await msg.edit(embed=embed)
                 embed.remove_field(index=0)
-                bot.load_extension(f'Cogs.{i[:-3]}')
+                try: bot.load_extension(f'Cogs.{i[:-3]}')
+                except: pass
                 embed.add_field(name='Loading', value=f'Loading {i[:-3]}')
                 await msg.edit(embed=embed)
                 embed.remove_field(index=0)

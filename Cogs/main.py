@@ -46,6 +46,11 @@ class Main(commands.Cog, name='잡다한것'):
     async def _introduce(self, ctx, *, content=''):
         writedata(id=ctx.author.id, item='introduce', value=content)
         await sendEmbed(ctx=ctx, title='소개말설정', content=f'{ctx.author.name}님의 소개말이 `{content}`로 변경되었습니다.')
+    
+    @commands.command(name='이모지', aliases=['raw', '이모티콘', 'ㅇㅁㅈ'], help='이모지의 raw 값을 보여줍니다.', usage='[이모지]')
+    @can_use()
+    async def _emoji(self, ctx, *, emoji: discord.Emoji):
+        await sendEmbed(ctx=ctx, title='이모지', content=f'`{emoji}`: {emoji}')
 
 def setup(bot):
     bot.add_cog(Main(bot))
