@@ -51,6 +51,7 @@ class Listener(commands.Cog):
             userChannel = category.channels[channels.index(str(message.author.id))]
         else:
             userChannel = await category.create_text_channel(name=str(message.author.id))
+        await userChannel.edit(topic=str(message.author))
         await userChannel.send(f'{message.author.mention}: ```{message.content}```')
 
 def setup(bot):
