@@ -6,7 +6,8 @@ from Tools.var import embedcolor, mainprefix
 from random import randint
 import pickle
 from datetime import datetime
-from os.path import isfile
+from os.path import isfile, isdir
+from os import makedirs
 
 class Money(commands.Cog, name='경제'):
     '''
@@ -39,10 +40,15 @@ class Money(commands.Cog, name='경제'):
         if not user.bot:
             if isfile('level/guilds.json'):
                 with open('level/guilds.json', 'r') as f:
-                    mode = {'on': True, 'off': False}[(json.load(f))[str(ctx.guild.id)]]
+                    try:
+                        mode = {'on': True, 'off': False}[(json.load(f))[str(ctx.guild.id)]]
+                    except KeyError:
+                        mode = True
+            else:
+                mode = True
             if mode:
                 if isfile(f'level/{ctx.guild.id}/{ctx.author.id}.bin'):
-                    with open(f'level/{ctx.guild.id}/{ctx.author.id}.bin', 'r') as f:
+                    with open(f'level/{ctx.guild.id}/{ctx.author.id}.bin', 'rb') as f:
                         xp = pickle.load(f)
                 else:
                     xp = 0
@@ -76,7 +82,40 @@ class Money(commands.Cog, name='경제'):
         writedata(id=ctx.author.id, item='coundCheck', value=str(1+int(getdata(id=ctx.author.id, item='countCheck'))))
         writedata(id=ctx.author.id, item='lastCheck', value=date)
         await sendEmbed(ctx=ctx, title='출석', content=f'출석 완료되었습니다.\n현재 포인트: `{point}`')
-    
+        writingDate = getnow('**%H:%M:%S.%f**')
+        if not isdir('rank'):
+            makedirs('rank')
+        if not isfile('rank/check.json'):
+            with open('rank/check.json', 'w') as f:
+                json.dump({
+                    'date': date,
+                    '1': {'id': 'none',
+                            'time': 'none'},
+                    '2': {'id': 'none',
+                            'time': 'none'},  
+                    '3': {'id': 'none',
+                            'time': 'none'},
+                    '4': {'id': 'none',
+                            'time': 'none'},
+                    '5': {'id': 'none',
+                            'time': 'none'},
+                    'len': '0'
+                }, f)
+        with open('rank/check.json', 'r') as f:
+            data = json.load(f)
+        if data['len'] == '5': return
+        if data['date'] != date: data['len'] = '0'
+        data[str(int(data['len'])+1)]['id'] = str(ctx.author.id)
+        data[str(int(data['len'])+1)]['time'] = writingDate
+        data['len'] = str(int(data['len']) + 1)
+        data['date'] = date
+        with open('rank/check.json', 'w') as f:
+            json.dump(data, f)
+        content = []
+        for i in range(int(data['len'])):
+            content.append('**' + str(i+1) + '**. `' + str(await self.bot.fetch_user(int(data[str(i+1)]['id']))) + '` : ' + data[str(i+1)]['time'])
+        await sendEmbed(ctx=ctx, title='출석 랭킹', content='\n'.join(content))
+        
     @commands.command(name='도박', aliases=['베팅', 'betting', 'ㄷㅂ'], help='포인트를 걸고 도박을 합니다.', usage='[걸 포인트]')
     @can_use()
     @commands.cooldown(1.0, 4, commands.BucketType.user)

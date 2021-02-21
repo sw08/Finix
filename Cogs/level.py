@@ -19,8 +19,11 @@ class Level(commands.Cog, name='레벨링'):
     @commands.Cog.listener()
     async def on_command_completion(self, message):
         if message.author.bot: return
-        with open('level/guilds.json', 'r') as f:
-            data = json.load(f)
+        if isfile('level/guilds/json'):    
+            with open('level/guilds.json', 'r') as f:
+                data = json.load(f)
+        else:
+            data = {}
         try:
             if data[str(message.guild.id)] == 'off':
                 return
@@ -28,13 +31,13 @@ class Level(commands.Cog, name='레벨링'):
             pass
         if randint(1, 5) < 4: return
         if not isfile(f'level/{message.guild.id}/{message.author.id}.bin'):
-            with open(f'level/{message.guild.id}/{message.author.id}.bin', 'w') as f:
+            with open(f'level/{message.guild.id}/{message.author.id}.bin', 'wb') as f:
                 pickle.dump(0, f)
-        with open(f'level/{message.guild.id}/{message.author.id}.bin') as f:
+        with open(f'level/{message.guild.id}/{message.author.id}.bin', 'rb') as f:
             xp = pickle.load(f)
         level = xp // 50
         xp += randint(1, 4)
-        with open(f'level/{message.guild.id}/{message.author.id}.bin', 'w') as f:
+        with open(f'level/{message.guild.id}/{message.author.id}.bin', 'wb') as f:
             pickle.dump(xp, f)
         if xp // 50 > level:
             await sendEmbed(ctx=await self.bot.get_context(message), title='레벨 업!', content=f'{message.author.mention}님이 {int(level)+1}레벨이 되었습니다!')
