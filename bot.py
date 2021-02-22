@@ -91,6 +91,8 @@ async def on_command_error(ctx, error):
         await warn(ctx=ctx, content='권한이 없습니다.')
     elif isinstance(error, commands.CommandNotFound):
         pass
+    elif '403 Forbidden' in str(error):
+        await warn(ctx=ctx, content='저런. 봇에게 권한을 제대로 주지 않으셨군요')
     else:
         await errorlog(ctx=ctx, error=error, bot=bot)
 

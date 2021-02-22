@@ -28,7 +28,7 @@ class Support(commands.Cog, name='지원'):
         embed.add_field(name='버전', value=version, inline=False)
         embed.add_field(name='개발 언어 및 라이브러리', value='파이썬, discord.py', inline=False)
         embed.add_field(name='크레딧', value='Team Orora, huntingbear21#4317, 3.141592#7499, 심심러#1000 등 많은 분들', inline=False)
-        embed.add_field(name='링크', value=f'[서포트 서버 초대](http://support.finix.kro.kr)\n[피닉스 권한없이 초대](http://invite.finix.kro.kr)\n[피닉스 최소권한 초대](http://invite2.finix.kro.kr)\n[피닉스 깃허브](http://github.finix.kro.kr)')
+        embed.add_field(name='링크', value=f'[Koreanbots](http://koreanbots.finix.kro.kr)\n[서포트 서버 초대](http://support.finix.kro.kr)\n[피닉스 권한없이 초대](http://invite.finix.kro.kr)\n[피닉스 최소권한 초대](http://invite2.finix.kro.kr)\n[피닉스 깃허브](http://github.finix.kro.kr)')
         embed.set_footer(text=f'{ctx.author} | {mainprefix}도움', icon_url=ctx.author.avatar_url)
         embed.set_thumbnail(url=self.bot.user.avatar_url)
         await ctx.send(embed=embed)
@@ -120,12 +120,7 @@ class Support(commands.Cog, name='지원'):
             invite = '[현재 서버 초대](' + (await ctx.guild.channels[0].create_invite()).url + ')'
         except:
             invite = ''
-        await sendEmbed(ctx=ctx, title='초대', content=f'[서포트 서버 초대](http://support.finix.kro.kr)\n[피닉스 권한없이 초대](http://invite.finix.kro.kr)\n[피닉스 최소권한 초대](http://invite.finix.kro.kr)\n{invite}')
-    
-    @commands.command(name='hellothisisverification')
-    @can_use()
-    async def _hellothisisverification(self, ctx):
-        await sendEmbed(ctx=ctx, title='소유자', content='건빵#6814(745848200195473490)')
+        await sendEmbed(ctx=ctx, title='초대', content=f'[Koreanbots](http://koreanbots.finix.kro.kr)\n[서포트 서버 초대](http://support.finix.kro.kr)\n[피닉스 권한없이 초대](http://invite.finix.kro.kr)\n[피닉스 최소권한 초대](http://invite.finix.kro.kr)\n{invite}')
 
 def setup(bot):
     bot.add_cog(Support(bot))
