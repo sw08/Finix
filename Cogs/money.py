@@ -90,15 +90,15 @@ class Money(commands.Cog, name='경제'):
                 json.dump({
                     'date': date,
                     '1': {'id': 'none',
-                            'time': 'none'},
+                          'time': 'none'},
                     '2': {'id': 'none',
-                            'time': 'none'},  
+                          'time': 'none'},  
                     '3': {'id': 'none',
-                            'time': 'none'},
+                          'time': 'none'},
                     '4': {'id': 'none',
-                            'time': 'none'},
+                          'time': 'none'},
                     '5': {'id': 'none',
-                            'time': 'none'},
+                          'time': 'none'},
                     'len': '0'
                 }, f)
         with open('rank/check.json', 'r') as f:
@@ -115,7 +115,7 @@ class Money(commands.Cog, name='경제'):
         for i in range(int(data['len'])):
             content.append('**' + str(i+1) + '**. `' + str(await self.bot.fetch_user(int(data[str(i+1)]['id']))) + '` : ' + data[str(i+1)]['time'])
         await sendEmbed(ctx=ctx, title='출석 랭킹', content='\n'.join(content))
-        
+
     @commands.command(name='도박', aliases=['베팅', 'betting', 'ㄷㅂ'], help='포인트를 걸고 도박을 합니다.', usage='[걸 포인트]')
     @can_use()
     @commands.cooldown(1.0, 4, commands.BucketType.user)
@@ -154,6 +154,41 @@ class Money(commands.Cog, name='경제'):
         writedata(id=ctx.author.id, item='point', value=str(int(getdata(id=ctx.author.id, item='point'))-amount))
         writedata(id=user.id, item='point', value=str(int(getdata(id=user.id, item='point'))+round(amount*0.95)))
         await sendEmbed(ctx=ctx, title='💵 송금 💵', content=f'`{user}`님께 💵 `{round(amount*0.95)}`만큼 송금되었습니다.\n수수료: 💵 `{amount-round(amount*0.95)}`')
+    
+    @commands.command(name='랭킹', aliases=['순위표', 'ㄹㅋ', 'rank'], help='랭킹을 보여줍니다', usage="<종류>")
+    @commands.cooldown(1.0, 10, commands.BucketType.user)
+    @can_use()
+    async def _ranking(self, ctx, category=None):
+        if category not in ['출석순위', None]: return
+        await ctx.trigger_typing()
+        if not isdir('rank'):
+            makedirs('rank')
+        if not isfile('rank/check.json'):
+            date = getnow('%Y%m%d')
+            with open('rank/check.json', 'w') as f:
+                json.dump({
+                    'date': date,
+                    '1': {'id': 'none',
+                          'time': 'none'},
+                    '2': {'id': 'none',
+                          'time': 'none'},  
+                    '3': {'id': 'none',
+                          'time': 'none'},
+                    '4': {'id': 'none',
+                          'time': 'none'},
+                    '5': {'id': 'none',
+                          'time': 'none'},
+                    'len': '0'
+                }, f)
+        if category == '출석순위':
+            content = []
+            with open('rank/check.json', 'r') as f:
+                data = json.load(f)
+            for i in range(5):
+                if data[str(i+1)]['id'] == 'none': break
+                content.append('**' + str(i+1) + '**. ' + str(await self.bot.fetch_user(int(data[str(i+1)]['id']))))
+            content = '\n'.join(content)
+            return await sendEmbed(ctx=ctx, title='출석 순위 랭킹', content=content)
 
 def setup(bot):
     bot.add_cog(Money(bot))
