@@ -6,12 +6,18 @@ from Tools.func import warn, errorlog, is_owner
 from datetime import datetime
 from os import listdir, chdir
 import asyncio
+import koreanbots
 
 with open('token.bin', 'rb') as f:
     token = load(f)
 
 bot = commands.Bot(command_prefix=prefix, intents=discord.Intents.all())
 bot.remove_command('help')
+
+with open('koreanbotsToken.bin', 'rb') as f:
+    koreanbotsToken = load(f)
+
+Bots = koreanbots.Client(bot, koreanbotsToken)
 
 if 'Finix' in listdir():
     chdir('Finix')
