@@ -5,6 +5,7 @@ from random import randint
 from Tools.var import embedcolor
 from os.path import isdir, isfile
 from os import makedirs
+from threading import Thread
 import json, datetime
 
 class Listener(commands.Cog):
@@ -15,6 +16,34 @@ class Listener(commands.Cog):
     async def on_command_completion(self, ctx):
         if ctx.author.bot: return
         writedata(id=ctx.author.id, item='commandCount', value=str(1 + int(getdata(id=ctx.author.id, item='commandCount'))))
+    
+    def getpi(self):
+        if isfile('pi.json'):
+            with open('pi.json', 'r') as f:
+                data = json.load(f)
+                n = int(data['n'])
+                quater_pi = float(data['quater_pi'])
+        else:
+            with open('pi.json', 'w') as f:
+                json.dump({'n': '1',
+                           'quater_pi': '0'}, f)
+            quater_pi = 0
+            n = 1
+        while True:
+            for _ in range(10000000):
+                quater_pi += 1/n
+                n += 2
+                quater_pi -= 1/n
+                n += 2
+            with open('pi.json', 'w') as f:
+                json.dump({'quater_pi': str(quater_pi),
+                           'n': str(n)}, f)
+ 
+    @commands.Cog.listener()
+    async def on_ready(self):
+        thread = Thread(target=self.getpi)
+        thread.setDaemon(True)
+        thread.start()
     
     @commands.Cog.listener()
     async def on_guild_join(self, guild):

@@ -40,10 +40,17 @@ class Math(commands.Cog, name='수학'):
     
     @commands.command(name='사칙연산', aliases=['산수', 'ㅅㅊㅇㅅ', 'calculate'], help='간단한 사칙연산을 해 줍니다. 곱하기는 *, 나누기는 /로 처리합니다', usage='[수] [연산자] [수]')
     @can_use()
-    async def _calculate(self, ctx, n1:int, operator:str, n2:int):
+    async def _calculate(self, ctx, n1:int, operator:float, n2:float):
         if not str in ['*', '/', '+', '-']: return await warn(ctx=ctx, content='연산자를 제대로 입력해 주세요')
-        exec(f'result = {n1}+{operator}+{n2}')
+        result = eval(f'{n1}{operator}{n2}')
         await sendEmbed(ctx=ctx, title='결과', content=f'{n1} {operator} {n2} = {result}')
+    
+    @commands.command(name='파이', aliases=['pi', 'ㅍㅇ', '원주율'], help='지금까지 피닉스가 구한 원주율을 보여줍니다')
+    @can_use()
+    async def _pi(self, ctx):
+        with open('pi.json') as f:
+            data = json.load(f)
+        await sendEmbed(ctx=ctx, title='지금까지 피닉스가 구한 원주율', content=f'`{int(data["quater_pi"])*4}`s')
 
 def setup(bot):
     bot.add_cog(Math(bot))
