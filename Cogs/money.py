@@ -37,22 +37,6 @@ class Money(commands.Cog, name='경제'):
         embed.add_field(name='유저 상태', value=f'{(["데스크톱", "모바일"])[int(user.is_on_mobile())]}, {status}')
         embed.add_field(name='봇 여부', value=f'{([ "👤", "🤖"])[int(user.bot)]} 계정')
         embed.add_field(name='계정 생성일', value=f'{(user.created_at).strftime("%Y년 %m월 %d일")}', inline=False)
-        if not user.bot:
-            if isfile('level/guilds.json'):
-                with open('level/guilds.json', 'r') as f:
-                    try:
-                        mode = {'on': True, 'off': False}[(json.load(f))[str(ctx.guild.id)]]
-                    except KeyError:
-                        mode = True
-            else:
-                mode = True
-            if mode:
-                if isfile(f'level/{ctx.guild.id}/{ctx.author.id}.bin'):
-                    with open(f'level/{ctx.guild.id}/{ctx.author.id}.bin', 'rb') as f:
-                        xp = pickle.load(f)
-                else:
-                    xp = 0
-                embed.add_field(name='레벨', value=f'`{xp // 50}`레벨 `({xp})`')
             embed.add_field(name='명령어 사용 횟수', value=f'`{getdata(id=user.id, item="commandCount")}`회')
             embed.add_field(name='포인트', value=f'💵 `{point}`포인트')
             embed.add_field(name='승률', value=f'`{round(percentCheck)}`%')
