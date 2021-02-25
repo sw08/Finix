@@ -55,7 +55,7 @@ async def reload_commands(ctx, *, extension='all'):
                 embed.add_field(name='Unloading', value=f'Unloading {i[:-3]}')
                 await msg.edit(embed=embed)
                 embed.remove_field(index=0)
-                try: bot.load_extensi   on(f'Cogs.{i[:-3]}')
+                try: bot.load_extension(f'Cogs.{i[:-3]}')
                 except: pass
                 embed.add_field(name='Loading', value=f'Loading {i[:-3]}')
                 await msg.edit(embed=embed)
