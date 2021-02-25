@@ -48,14 +48,13 @@ class Listener(commands.Cog):
             for i in messages:
                 await self.bot.change_presence(status=discord.Status.online, activity=discord.Game(i))
                 await sleep(3)
-            del messages
-
+    
     @commands.Cog.listener()
     async def on_ready(self):
+        await self.bot.change_presence(status=discord.Status.online, activity=(await self.presence()))
         thread = Thread(target=self.getpi)
         thread.setDaemon(True)
         thread.start()
-        await self.bot.change_presence(status=discord.Status.online, activity=(await self.presence()))
     
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
