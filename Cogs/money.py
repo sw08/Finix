@@ -37,6 +37,7 @@ class Money(commands.Cog, name='경제'):
         embed.add_field(name='유저 상태', value=f'{(["데스크톱", "모바일"])[int(user.is_on_mobile())]}, {status}')
         embed.add_field(name='봇 여부', value=f'{([ "👤", "🤖"])[int(user.bot)]} 계정')
         embed.add_field(name='계정 생성일', value=f'{(user.created_at).strftime("%Y년 %m월 %d일")}', inline=False)
+        if not user.bot:
             embed.add_field(name='명령어 사용 횟수', value=f'`{getdata(id=user.id, item="commandCount")}`회')
             embed.add_field(name='포인트', value=f'💵 `{point}`포인트')
             embed.add_field(name='승률', value=f'`{round(percentCheck)}`%')

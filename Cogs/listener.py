@@ -32,7 +32,7 @@ class Listener(commands.Cog):
             quater_pi = 0
             n = 1
         while True:
-            for _ in range(10000000):
+            for _ in range(100):
                 quater_pi += 1/n
                 n += 2
                 quater_pi -= 1/n
