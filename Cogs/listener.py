@@ -1,8 +1,10 @@
+from asyncio import sleep
 import discord
 from discord.ext import commands
 from Tools.func import writedata, getdata, sendEmbed
 from random import randint
-from Tools.var import embedcolor
+from Tools.var import embedcolor, version, mainprefix
+
 from os.path import isdir, isfile
 from os import makedirs
 from threading import Thread
@@ -38,12 +40,22 @@ class Listener(commands.Cog):
             with open('pi.json', 'w') as f:
                 json.dump({'quater_pi': str(quater_pi),
                            'n': str(n)}, f)
- 
+    
+    async def presence(self):
+        await self.bot.wait_until_ready()
+        while not self.bot.is_closed():
+            messages = [f'{len(self.bot.guilds)}개의 서버에서 활동', f'{len(self.bot.users)}명의 유저들과 활동', f'{mainprefix}도움', f'피닉스 {version}', 'DM으로 문의하세요']
+            for i in messages:
+                await self.bot.change_presence(status=discord.Status.online, activity=discord.Game(i))
+                await sleep(3)
+            del messages
+
     @commands.Cog.listener()
     async def on_ready(self):
         thread = Thread(target=self.getpi)
         thread.setDaemon(True)
         thread.start()
+        await self.bot.change_presence(status=discord.Status.online, activity=(await self.presence()))
     
     @commands.Cog.listener()
     async def on_guild_join(self, guild):

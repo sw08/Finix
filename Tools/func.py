@@ -78,6 +78,7 @@ def writedata(id, item, value):
 
 def can_use():
     async def predicate(ctx):
+        if type(ctx.channel) == discord.DMChannel: return False
         if not isfile('banned.bin'):
             return True
         with open('banned.bin', 'rb') as f:

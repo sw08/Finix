@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 from Tools.func import can_use, sendEmbed, warn
 from math import sqrt
+import json
 
 class Math(commands.Cog, name='수학'):
     '''
@@ -45,7 +46,7 @@ class Math(commands.Cog, name='수학'):
         result = eval(f'{n1}{operator}{n2}')
         await sendEmbed(ctx=ctx, title='결과', content=f'{n1} {operator} {n2} = {result}')
     
-    @commands.command(name='파이', aliases=['pi', 'ㅍㅇ', '원주율'], help='지금까지 피닉스가 구한 원주율을 보여줍니다')
+    @commands.command(name='파이', aliases=['pi', 'ㅇㅈㅇ', '원주율'], help='지금까지 피닉스가 구한 원주율을 보여줍니다')
     @can_use()
     async def _pi(self, ctx):
         with open('pi.json') as f:
