@@ -8,5 +8,5 @@
 
 
 ## 출처 표기 방법
-`개발자: [sw08](https://github.com/sw08)
-원본: [피닉스 봇](http://github.finix.kro.kr)`
+`개발자: [sw08](https://github.com/sw08)`  
+`원본: [피닉스 봇](http://github.finix.kro.kr)`
