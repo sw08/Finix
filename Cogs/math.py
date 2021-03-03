@@ -45,13 +45,6 @@ class Math(commands.Cog, name='수학'):
         if not str in ['*', '/', '+', '-']: return await warn(ctx=ctx, content='연산자를 제대로 입력해 주세요')
         result = eval(f'{n1}{operator}{n2}')
         await sendEmbed(ctx=ctx, title='결과', content=f'{n1} {operator} {n2} = {result}')
-    
-    @commands.command(name='파이', aliases=['pi', 'ㅇㅈㅇ', '원주율'], help='지금까지 피닉스가 구한 원주율을 보여줍니다')
-    @can_use()
-    async def _pi(self, ctx):
-        with open('pi.json') as f:
-            data = json.load(f)
-        await sendEmbed(ctx=ctx, title='지금까지 피닉스가 구한 원주율', content=f'`{int(data["quater_pi"])*4}`s')
 
 def setup(bot):
     bot.add_cog(Math(bot))

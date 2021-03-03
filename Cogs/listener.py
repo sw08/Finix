@@ -19,28 +19,6 @@ class Listener(commands.Cog):
         if ctx.author.bot: return
         writedata(id=ctx.author.id, item='commandCount', value=str(1 + int(getdata(id=ctx.author.id, item='commandCount'))))
     
-    def getpi(self):
-        if isfile('pi.json'):
-            with open('pi.json', 'r') as f:
-                data = json.load(f)
-                n = int(data['n'])
-                quater_pi = float(data['quater_pi'])
-        else:
-            with open('pi.json', 'w') as f:
-                json.dump({'n': '1',
-                           'quater_pi': '0'}, f)
-            quater_pi = 0
-            n = 1
-        while True:
-            for _ in range(100):
-                quater_pi += 1/n
-                n += 2
-                quater_pi -= 1/n
-                n += 2
-            with open('pi.json', 'w') as f:
-                json.dump({'quater_pi': str(quater_pi),
-                           'n': str(n)}, f)
-    
     async def presence(self):
         await self.bot.wait_until_ready()
         while not self.bot.is_closed():
@@ -52,9 +30,6 @@ class Listener(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         await self.bot.change_presence(status=discord.Status.online, activity=(await self.presence()))
-        thread = Thread(target=self.getpi)
-        thread.setDaemon(True)
-        thread.start()
     
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
