@@ -22,6 +22,14 @@ Bots = koreanbots.Client(bot, koreanbotsToken)
 if 'Finix' in listdir():
     chdir('Finix')
 
+async def presence( ):
+        await bot.wait_until_ready()
+        while not bot.is_closed():
+            messages = [f'{len(bot.guilds)}개의 서버에서 활동', f'{len(bot.users)}명의 유저들과 활동', f'{mainprefix}도움', f'피닉스 {version}', 'DM으로 문의하세요']
+            for i in messages:
+                await bot.change_presence(status=discord.Status.online, activity=discord.Game(i))
+                await sleep(3)
+
 @bot.event
 async def on_ready():
     for filename in listdir("Cogs"):
@@ -29,6 +37,7 @@ async def on_ready():
             bot.load_extension(f"Cogs.{filename[:-3]}")
             print(f"Cogs.{filename[:-3]}")
     print('구동 시작')
+    await bot.change_presence(status=discord.Status.online, activity=(await presence()))
 
 @bot.command(name="로드", aliases=['모듈로드', 'load', 'ㄹㄷ'])
 @is_owner()

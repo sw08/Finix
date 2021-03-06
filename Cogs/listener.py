@@ -18,18 +18,6 @@ class Listener(commands.Cog):
         if ctx.author.bot: return
         writedata(id=ctx.author.id, item='commandCount', value=str(1 + int(getdata(id=ctx.author.id, item='commandCount'))))
     
-    async def presence(self):
-        await self.bot.wait_until_ready()
-        while not self.bot.is_closed():
-            messages = [f'{len(self.bot.guilds)}개의 서버에서 활동', f'{len(self.bot.users)}명의 유저들과 활동', f'{mainprefix}도움', f'피닉스 {version}', 'DM으로 문의하세요']
-            for i in messages:
-                await self.bot.change_presence(status=discord.Status.online, activity=discord.Game(i))
-                await sleep(3)
-    
-    @commands.Cog.listener()
-    async def on_ready(self):
-        await self.bot.change_presence(status=discord.Status.online, activity=(await self.presence()))
-    
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
         embed = discord.Embed(title='서버 참여', color=embedcolor)
