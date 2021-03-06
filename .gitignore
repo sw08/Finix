@@ -11,3 +11,7 @@ posts
 posts/
 rank/
 rank
+.bin
+*.bin
+stocks
+stocks/

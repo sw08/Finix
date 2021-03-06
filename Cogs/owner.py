@@ -72,12 +72,12 @@ class Owner(commands.Cog, name='관리자'):
                 ban = list()
                 pickle.dump(ban, f)
         if user.id in ban:
-            await sendEmbed(ctx=ctx, title='밴', content='이미 차단당한 유저입니다.')
+            await sendEmbed(ctx, title='밴', content='이미 차단당한 유저입니다.')
             return
         ban.append(user.id)
         with open('banned.bin', 'wb') as f:
             pickle.dump(ban, f)
-        await sendEmbed(ctx=ctx, title='밴', content=f'{user.mention}님이 {reason} 사유로 차단당하셨습니다.\n이의는 관리자 DM으로 제출해 주십시오.')
+        await sendEmbed(ctx, title='밴', content=f'{user.mention}님이 {reason} 사유로 차단당하셨습니다.\n이의는 관리자 DM으로 제출해 주십시오.')
         try:
             user = await user.create_dm()
             await user.send(embed=discord.Embed(title='밴', description=f'당신은 {reason}이라는 이유로 피닉스로부터 차단당하셨습니다.\n이의는 관리자 DM으로 제출해 주십시오', color=embedcolor))
@@ -99,12 +99,12 @@ class Owner(commands.Cog, name='관리자'):
                 ban = list()
                 pickle.dump(ban, f)
         if user.id not in ban:
-            await sendEmbed(ctx=ctx, title='밴', content='차단당하지 않은 유저입니다.')
+            await sendEmbed(ctx, title='밴', content='차단당하지 않은 유저입니다.')
             return
         del ban[ban.index(user.id)]
         with open('banned.bin', 'wb') as f:
             pickle.dump(ban, f)
-        await sendEmbed(ctx=ctx, title='밴', content=f'{user.mention}님은 {reason} 사유로 차단해제 되셨습니다.')
+        await sendEmbed(ctx, title='밴', content=f'{user.mention}님은 {reason} 사유로 차단해제 되셨습니다.')
         try:
             user = await user.create_dm()
             await user.send(embed=discord.Embed(title='밴', description=f'당신은 {reason}이라는 이유로 피닉스로부터 차단해제 되셨습니다.', color=embedcolor))
@@ -132,7 +132,7 @@ class Owner(commands.Cog, name='관리자'):
                        'writer': str(ctx.author.id)}, f)
         with open(f'posts/count.bin', 'wb') as f:
             pickle.dump(count+1, f)
-        await sendEmbed(ctx=ctx, title='공지발행', content='공지 발행완료')
+        await sendEmbed(ctx, title='공지발행', content='공지 발행완료')
     
     @commands.command(name='관리자송금', aliases=['강제송금', 'addpoint', 'ㄱㅅ'], help='관리자용 포인트 수정 명령어입니다.', usage='[유저] [돈]')
     @is_owner()
@@ -140,7 +140,7 @@ class Owner(commands.Cog, name='관리자'):
         point = int(getdata(id=user.id, item='point'))
         point += addpoint
         writedata(id=user.id, item='point', value=str(point))
-        await sendEmbed(ctx=ctx, title='관리자송금', content=f'{addpoint}원이 {user.mention}님께 보내졌습니다.')
+        await sendEmbed(ctx, title='관리자송금', content=f'{addpoint}원이 {user.mention}님께 보내졌습니다.')
         await log(embed=discord.Embed(title='관리자송금', description=f'{user.mention}님의 돈에 `{addpoint}`가 추가되었습니다.\n처리자: {ctx.author.mention}\n{(str(ctx.message.created_at))[:-7]}', color=embedcolor), bot=self.bot)
     
     @commands.command(name='답변', aliases=['ㅁㅇㄷㅂ', '문의답변', 'answer'], help='관리자용 DM으로 온 문의에 답변하는 명령어입니다.', usage='[답변할 내용]')
@@ -150,7 +150,7 @@ class Owner(commands.Cog, name='관리자'):
             return await warn(ctx=ctx, content='문의채널이 아닙니다')
         if answer is not None: return await (await (self.bot.get_user(int(ctx.channel.name))).create_dm()).send(f'{ctx.author.mention}: ```{answer.content}```')
         answer = ''
-        await sendEmbed(ctx=ctx, title='답변 시작', content='답변 내용을 입력해 주세요')
+        await sendEmbed(ctx, title='답변 시작', content='답변 내용을 입력해 주세요')
         channel = await (self.bot.get_user(int(ctx.channel.name))).create_dm()
         while True:
             answer = await self.bot.wait_for('message', check=lambda m: m.channel == ctx.channel and m.author == ctx.author)

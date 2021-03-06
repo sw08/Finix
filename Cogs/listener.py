@@ -4,7 +4,6 @@ from discord.ext import commands
 from Tools.func import writedata, getdata, sendEmbed
 from random import randint
 from Tools.var import embedcolor, version, mainprefix
-
 from os.path import isdir, isfile
 from os import makedirs
 from threading import Thread

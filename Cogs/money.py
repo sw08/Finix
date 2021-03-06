@@ -52,7 +52,7 @@ class Money(commands.Cog, name='경제'):
     async def _point(self, ctx, user: discord.User=None):
         if user is None or user.bot: user = ctx.author
         point = int(getdata(id=user.id, item='point'))
-        await sendEmbed(ctx=ctx, title='💵 돈 💵', content=f'`{user}`님의 돈: `{point}`원')
+        await sendEmbed(ctx, title='💵 돈 💵', content=f'`{user}`님의 돈: `{point}`원')
     
     @commands.command(name='출석', aliases=['ㅊ', '체크', 'check'], help='출석을 해 돈을 받습니다.')
     @commands.cooldown(1.0, 15, commands.BucketType.user)
@@ -66,7 +66,7 @@ class Money(commands.Cog, name='경제'):
         writedata(id=ctx.author.id, item='point', value=point)
         writedata(id=ctx.author.id, item='coundCheck', value=str(1+int(getdata(id=ctx.author.id, item='countCheck'))))
         writedata(id=ctx.author.id, item='lastCheck', value=date)
-        await sendEmbed(ctx=ctx, title='출석', content=f'출석 완료되었습니다.\n현재 포인트: `{point}`')
+        await sendEmbed(ctx, title='출석', content=f'출석 완료되었습니다.\n현재 포인트: `{point}`')
         writingDate = getnow('**%H:%M:%S.%f**')
         if not isdir('rank'):
             makedirs('rank')
@@ -99,7 +99,7 @@ class Money(commands.Cog, name='경제'):
         content = []
         for i in range(int(data['len'])):
             content.append('**' + str(i+1) + '**. `' + str(await self.bot.fetch_user(int(data[str(i+1)]['id']))) + '` : ' + data[str(i+1)]['time'])
-        await sendEmbed(ctx=ctx, title='출석 랭킹', content='\n'.join(content))
+        await sendEmbed(ctx, title='출석 랭킹', content='\n'.join(content))
 
     @commands.command(name='도박', aliases=['베팅', 'betting', 'ㄷㅂ'], help='포인트를 걸고 도박을 합니다.', usage='[걸 포인트]')
     @can_use()
@@ -119,13 +119,13 @@ class Money(commands.Cog, name='경제'):
         writedata(id=ctx.author.id, item='countRandom', value=str(int(getdata(id=ctx.author.id, item='countRandom'))+1))
         if result == 1:
             writedata(id=ctx.author.id, item='point', value=str(point+amount))
-            await sendEmbed(ctx=ctx, title='와아아', content=f'이겼습니다!\n현재 포인트: `{point+amount}`')
+            await sendEmbed(ctx, title='와아아', content=f'이겼습니다!\n현재 포인트: `{point+amount}`')
             writedata(id=ctx.author.id, item='winningRandom', value=str(int(getdata(id=ctx.author.id, item='winningRandom'))+1))
         elif result == 0:
-            await sendEmbed(ctx=ctx, title='휴...', content='이기진 못했지만 다행히 잃지는 않았어요!')
+            await sendEmbed(ctx, title='휴...', content='이기진 못했지만 다행히 잃지는 않았어요!')
         else:
             writedata(id=ctx.author.id, item='point', value=str(point-amount))
-            await sendEmbed(ctx=ctx, title='이런!', content=f'아쉽게도 져서 💵 {amount}만큼 잃었어요...\n현재 포인트: `{point-amount}`')
+            await sendEmbed(ctx, title='이런!', content=f'아쉽게도 져서 💵 {amount}만큼 잃었어요...\n현재 포인트: `{point-amount}`')
     
     @commands.command(name='송금', aliases=['돈보내기', 'sendMoney', 'ㅅㄱ'], help='원하는 사람에게 돈을 보냅니다.', usage='[유저] [돈]')
     @can_use()
@@ -138,7 +138,7 @@ class Money(commands.Cog, name='경제'):
             return await warn(ctx=ctx, content='봇에게는 송금할 수 없습니다')
         writedata(id=ctx.author.id, item='point', value=str(int(getdata(id=ctx.author.id, item='point'))-amount))
         writedata(id=user.id, item='point', value=str(int(getdata(id=user.id, item='point'))+round(amount*0.95)))
-        await sendEmbed(ctx=ctx, title='💵 송금 💵', content=f'`{user}`님께 💵 `{round(amount*0.95)}`만큼 송금되었습니다.\n수수료: 💵 `{amount-round(amount*0.95)}`')
+        await sendEmbed(ctx, title='💵 송금 💵', content=f'`{user}`님께 💵 `{round(amount*0.95)}`만큼 송금되었습니다.\n수수료: 💵 `{amount-round(amount*0.95)}`')
     
     @commands.command(name='랭킹', aliases=['순위표', 'ㄹㅋ', 'rank'], help='랭킹을 보여줍니다', usage="<종류>")
     @commands.cooldown(1.0, 10, commands.BucketType.user)
@@ -173,7 +173,7 @@ class Money(commands.Cog, name='경제'):
                 if data[str(i+1)]['id'] == 'none': break
                 content.append('**' + str(i+1) + '**. ' + str(await self.bot.fetch_user(int(data[str(i+1)]['id']))))
             content = '\n'.join(content)
-            return await sendEmbed(ctx=ctx, title='출석 순위 랭킹', content=content)
+            return await sendEmbed(ctx, title='출석 순위 랭킹', content=content)
 
 def setup(bot):
     bot.add_cog(Money(bot))

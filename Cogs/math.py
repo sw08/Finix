@@ -17,12 +17,12 @@ class Math(commands.Cog, name='수학'):
     @can_use()
     async def _quadEquation(self, ctx, a:float, b:float, c:float):
         if b*b < 4*a*c:
-            await sendEmbed(ctx=ctx, title='결과', content='해가 없습니다.')
+            await sendEmbed(ctx, title='결과', content='해가 없습니다.')
             return
         result = [str(((-1*b) + sqrt(b*b-4*a*c)) / 2*a), str(((-1*b) - sqrt(b*b-4*a*c)) / 2*a)]
         if result[0] == result[1]:
             del result[1]
-        await sendEmbed(ctx=ctx, title='결과', content=f'해: `{"`, `".join(result)}`')
+        await sendEmbed(ctx, title='결과', content=f'해: `{"`, `".join(result)}`')
     
     @commands.command(name='피보나치', aliases=['FibonacciNumber', '피보나치수열', 'ㅍㅂㄴㅊ'], help='피보나치 수열을 구합니다.', usage='[수열의 개수]')
     @commands.cooldown(1.0, 10, commands.BucketType.user)
@@ -37,14 +37,14 @@ class Math(commands.Cog, name='수학'):
             numbers[i] = str(numbers[i])
         if amount == 1:
             del numbers[1]
-        await sendEmbed(ctx=ctx, title='결과', content=f'`{"`, `".join(numbers)}`')
+        await sendEmbed(ctx, title='결과', content=f'`{"`, `".join(numbers)}`')
     
     @commands.command(name='사칙연산', aliases=['산수', 'ㅅㅊㅇㅅ', 'calculate'], help='간단한 사칙연산을 해 줍니다. 곱하기는 *, 나누기는 /로 처리합니다', usage='[수] [연산자] [수]')
     @can_use()
     async def _calculate(self, ctx, n1:int, operator:float, n2:float):
         if not str in ['*', '/', '+', '-']: return await warn(ctx=ctx, content='연산자를 제대로 입력해 주세요')
         result = eval(f'{n1}{operator}{n2}')
-        await sendEmbed(ctx=ctx, title='결과', content=f'{n1} {operator} {n2} = {result}')
+        await sendEmbed(ctx, title='결과', content=f'{n1} {operator} {n2} = {result}')
 
 def setup(bot):
     bot.add_cog(Math(bot))

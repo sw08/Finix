@@ -82,7 +82,7 @@ class Support(commands.Cog, name='지원'):
     async def _ping(self, ctx):
         ping = round(self.bot.latency*1000)
         first = datetime.now()
-        msg = await sendEmbed(ctx=ctx, title='핑', content=f'api 핑: `{ping}`ms')
+        msg = await sendEmbed(ctx, title='핑', content=f'api 핑: `{ping}`ms')
         second = datetime.now()
         delta = second - first
         delta = round(delta.microseconds/1000)
@@ -120,7 +120,7 @@ class Support(commands.Cog, name='지원'):
             invite = '[현재 서버 초대](' + (await ctx.guild.channels[0].create_invite()).url + ')'
         except:
             invite = ''
-        await sendEmbed(ctx=ctx, title='초대', content=f'[Koreanbots](http://koreanbots.finix.kro.kr)\n[서포트 서버 초대](http://support.finix.kro.kr)\n[피닉스 권한없이 초대](http://invite.finix.kro.kr)\n[피닉스 최소권한 초대](http://invite.finix.kro.kr)\n{invite}')
+        await sendEmbed(ctx, title='초대', content=f'[Koreanbots](http://koreanbots.finix.kro.kr)\n[서포트 서버 초대](http://support.finix.kro.kr)\n[피닉스 권한없이 초대](http://invite.finix.kro.kr)\n[피닉스 최소권한 초대](http://invite.finix.kro.kr)\n{invite}')
 
 def setup(bot):
     bot.add_cog(Support(bot))

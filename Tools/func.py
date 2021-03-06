@@ -8,17 +8,17 @@ from datetime import datetime
 from pickle import load
 import json
 
-async def sendEmbed(ctx, title, content):
+async def sendEmbed(*, ctx, title, content):
     embed = discord.Embed(title=title, description=content, color=embedcolor)
     embed.set_footer(text=f'{ctx.author} | {mainprefix}도움', icon_url=ctx.author.avatar_url)
     return await ctx.send(embed=embed)
 
-async def warn(ctx, content):
+async def warn(*, ctx, content):
     embed = discord.Embed(title='경고', description=content, color=errorcolor)
     embed.set_footer(text=f'{ctx.author} | {mainprefix}도움', icon_url=ctx.author.avatar_url)
     await ctx.send(embed=embed)
 
-async def errorlog(ctx, error, bot):
+async def errorlog(*, ctx, error, bot):
     embed = discord.Embed(title='오류', color=errorcolor)
     embed.add_field(name='오류 발생자', value=f'{ctx.author} ({ctx.author.id})\n{ctx.author.mention}')
     embed.add_field(name='오류 발생지', value=f'{ctx.message.guild.name} ({ctx.message.guild.id})\n{ctx.message.channel.name} ({ctx.message.channel.id})')
