@@ -61,7 +61,7 @@ class Support(commands.Cog, name='지원'):
                 embed.add_field(name=f'**{i.qualified_name}**', value=f'`{i.description}`', inline=False)
             helps.append(embed)
             for i in range(len(cogs)):
-                embed = discord.Embed(title=f'{i+2}/{len(cogs)+1} 페이지 - {cogs[i].qualified_name}', description=f'**`{cogs[i].description}`**, color=embedcolor)
+                embed = discord.Embed(title=f'{i+2}/{len(cogs)+1} 페이지 - {cogs[i].qualified_name}', description=f'**`{cogs[i].description}`**', color=embedcolor)
                 for i in cogs[i].get_commands():
                     if i.usage is None:
                         usage = ''
