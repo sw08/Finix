@@ -26,7 +26,7 @@ class Main(commands.Cog, name='잡다한것'):
         remove(title)
         try: await ctx.message.delete()
         except: pass
-        await sendEmbed(ctx, title='완료', content='DM으로 파일이 전송되었습니다.\n\n만약 전송되지 않았다면 DM을 차단하지 않았는지 확인해 보세요.')
+        await sendEmbed(ctx=ctx, title='완료', content='DM으로 파일이 전송되었습니다.\n\n만약 전송되지 않았다면 DM을 차단하지 않았는지 확인해 보세요.')
     
     @commands.command(name='색깔보기', aliases=['색보기', 'ㅅ', 'color'], help='RGB로 입력한 색상을 보여줍니다', usage='[R] [G] [B]')
     @commands.cooldown(1.0, 5, commands.BucketType.user)
@@ -45,12 +45,12 @@ class Main(commands.Cog, name='잡다한것'):
     @can_use()
     async def _introduce(self, ctx, *, content=''):
         writedata(id=ctx.author.id, item='introduce', value=content)
-        await sendEmbed(ctx, title='소개말설정', content=f'{ctx.author.name}님의 소개말이 `{content}`로 변경되었습니다.')
+        await sendEmbed(ctx=ctx, title='소개말설정', content=f'{ctx.author.name}님의 소개말이 `{content}`로 변경되었습니다.')
     
     @commands.command(name='이모지', aliases=['raw', '이모티콘', 'ㅇㅁㅈ'], help='이모지의 raw 값을 보여줍니다.', usage='[이모지]')
     @can_use()
     async def _emoji(self, ctx, *, emoji: discord.Emoji):
-        await sendEmbed(ctx, title='이모지', content=f'`{emoji}`: {emoji}')
+        await sendEmbed(ctx=ctx, title='이모지', content=f'`{emoji}`: {emoji}')
 
 def setup(bot):
     bot.add_cog(Main(bot))
