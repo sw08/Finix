@@ -143,8 +143,8 @@ class Money(commands.Cog, name='경제'):
     @commands.command(name='랭킹', aliases=['순위표', 'ㄹㅋ', 'rank'], help='랭킹을 보여줍니다', usage="<종류>")
     @commands.cooldown(1.0, 10, commands.BucketType.user)
     @can_use()
-    async def _ranking(self, ctx, category=None):
-        if category not in ['출석순위'] or category is None: return
+    async def _ranking(self, ctx, category='전체'):
+        if category not in ['출석순위']: return await warn(ctx=ctx, content=f'`{category}` 랭킹을 찾을 수 없습니다.')
         await ctx.trigger_typing()
         if not isdir('rank'):
             makedirs('rank')
@@ -172,7 +172,7 @@ class Money(commands.Cog, name='경제'):
             if data['date'] != getnow('%Y%m%d'): return await sendEmbed(ctx=ctx, title='출석 순위 랭킹', content='오늘의 출석자가 없습니다.')
             for i in range(5):
                 if data[str(i+1)]['id'] == 'none': break
-                content.append('**' + str(i+1) + '**. ' + str(await self.bot.fetch_user(int(data[str(i+1)]['id']))))
+                content.append('**' + str(i+1) + '**. ' + str(await self.bot.fetch_user(int(data[str(i+1)]['id']))) + ' : ' + data[str(i+1)]['time'])
             content = '\n'.join(content)
             return await sendEmbed(ctx=ctx, title='출석 순위 랭킹', content=content)
 
