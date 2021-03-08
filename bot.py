@@ -6,6 +6,7 @@ from Tools.func import warn, errorlog, is_owner
 from datetime import datetime
 from os import listdir, chdir
 import asyncio
+from asyncio import sleep
 import koreanbots
 
 with open('token.bin', 'rb') as f:
