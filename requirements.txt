@@ -1,5 +1,5 @@
 qrcode
-barcode
+python-barcode
 koreanbots
 EZPaginator
 discord
