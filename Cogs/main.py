@@ -1,11 +1,15 @@
+from qrcode import make
 from discord.ext import commands
 import discord
 from Tools.func import sendEmbed, can_use, warn, writedata
 from Tools.var import embedcolor, mainprefix, prefix
 from os import listdir, remove
+from os.path import isfile
 from datetime import datetime
 from asyncio import TimeoutError
 from PIL import Image
+from barcode import get
+from barcode.writer import ImageWriter
 
 class Main(commands.Cog, name='잡다한것'):
     """
@@ -51,6 +55,27 @@ class Main(commands.Cog, name='잡다한것'):
     @can_use()
     async def _emoji(self, ctx, *, emoji: discord.Emoji):
         await sendEmbed(ctx=ctx, title='이모지', content=f'`{emoji}`: {emoji}')
+    
+    @commands.command(name='QR코드', aliases=['qrcode', '큐알코드', 'ㅋㅇㅋㄷ'], help='QR코드를 만들어 줍니다.', usage='[내용]')
+    @can_use()
+    @commands.max_concurrency(1.0, commands.BucketType.user)
+    @commands.cooldown(1.0, 5, commands.BucketType.user)
+    async def _qrcode(self, ctx, *, content):
+        make(content).save('qrcode.png')
+        await ctx.send(file=discord.File('qrcode.png'))
+        remove('qrcode.png')
+    
+    @commands.command(name='바코드', aliases=['barcode', 'ㅂㅋㄷ', '막대코드'], help='바코드를 만들어줍니다', usage='[바코드 타입] [내용]')
+    @can_use()
+    @commands.max_concurrency(1.0, commands.BucketType.user)
+    @commands.cooldown(1.0, 5, commands.BucketType.user)
+    async def _barcode(self, ctx, type_code, *, content):
+        types = ['ean8', 'ean13', 'ean14', 'code128', 'code39', 'pzn', 'issn', 'isbn13', 'isbn10', 'jan', 'upca']
+        if type_code.lower() not in types: await warn(ctx=ctx, content=f'바코드의 타입을 찾을 수 없습니다.\n타입 목록:\n```{", ".join([i.upper() for i in types])}```')
+        img = get(type_code.lower(), content, writer=ImageWriter())
+        file = img.save(type_code)
+        await ctx.send(file=discord.File(file))
+        remove(file)
 
 def setup(bot):
     bot.add_cog(Main(bot))
