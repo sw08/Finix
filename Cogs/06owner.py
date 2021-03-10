@@ -63,7 +63,7 @@ class Owner(commands.Cog, name='관리자'):
     
     @commands.command(name='밴', aliases=['차단', 'ban', 'ㅂ'], help='봇에게서 차단하는 명령어입니다.', usage='[유저] [이유]')
     @is_owner()
-    async def _ban(self, ctx, user: discord.User, *, reason):
+    async def _ban(self, ctx, user: discord.Member, *, reason):
         if isfile('banned.bin'):
             with open("banned.bin", "rb") as f: # 파일 읽기 (만약 파일이 있을 경우)
                 ban = pickle.load(f) # 데이터를 불러오기
@@ -90,7 +90,7 @@ class Owner(commands.Cog, name='관리자'):
     
     @commands.command(name='언밴', aliases=['차단해제', 'unban', 'ㅇㅂ'], help='봇에게서 차단을 해제하는 명령어입니다.', usage='[유저] [이유]')
     @is_owner()
-    async def _unban(self, ctx, user: discord.User, *, reason):
+    async def _unban(self, ctx, user: discord.Member, *, reason):
         if isfile('banned.bin'):
             with open("banned.bin", "rb") as f: # 파일 읽기 (만약 파일이 있을 경우)
                 ban = pickle.load(f) # 데이터를 불러오기
@@ -136,7 +136,7 @@ class Owner(commands.Cog, name='관리자'):
     
     @commands.command(name='관리자송금', aliases=['강제송금', 'addpoint', 'ㄱㅅ'], help='포인트 수정 명령어입니다.', usage='[유저] [돈]')
     @is_owner()
-    async def _addpoint(self, ctx, user:discord.user, addpoint:int):
+    async def _addpoint(self, ctx, user:discord.Member, addpoint:int):
         point = int(getdata(id=user.id, item='point'))
         point += addpoint
         writedata(id=user.id, item='point', value=str(point))

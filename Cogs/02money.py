@@ -46,15 +46,15 @@ class Money(commands.Cog, name='경제'):
             embed.add_field(name='인증 여부', value=f'{(["<:bot:812119117711933461>", "<:verified_bot:812119144731902013>"])[int(user.public_flags.verified_bot)]}')
         await ctx.send(embed=embed)
     
-    @commands.command(name='포인트', aliases=['point', '돈', 'ㄷ'], help='자신이 가지고 있는 돈을 보여줍니다.', usage='<유저 닉네임 또는 멘션>')
+    @commands.command(name='포인트', aliases=['point', '돈', 'ㅍㅇㅌ'], help='자신이 가지고 있는 돈을 보여줍니다.', usage='<유저 닉네임 또는 멘션>')
     @commands.cooldown(1.0, 5, commands.BucketType.user)
     @can_use()
-    async def _point(self, ctx, user: discord.User=None):
+    async def _point(self, ctx, user: discord.Member=None):
         if user is None or user.bot: user = ctx.author
         point = int(getdata(id=user.id, item='point'))
         await sendEmbed(ctx=ctx, title='💵 돈 💵', content=f'`{user}`님의 돈: `{point}`원')
     
-    @commands.command(name='출석', aliases=['ㅊ', '체크', 'check'], help='출석을 해 돈을 받습니다.')
+    @commands.command(name='출석', aliases=['ㅊ', 'ㅊㅅ', '체크', 'check'], help='출석을 해 돈을 받습니다.')
     @commands.cooldown(1.0, 15, commands.BucketType.user)
     @can_use()
     async def _check(self, ctx):
@@ -144,7 +144,7 @@ class Money(commands.Cog, name='경제'):
     @commands.command(name='송금', aliases=['돈보내기', 'sendMoney', 'ㅅㄱ'], help='원하는 사람에게 돈을 보냅니다.', usage='[유저] [돈]')
     @can_use()
     @commands.cooldown(1.0, 7, commands.BucketType.user)
-    async def _sendmoney(self, ctx, user:discord.User, amount:int):
+    async def _sendmoney(self, ctx, user:discord.Member, amount:int):
         if amount < 50:
             await warn(ctx=ctx, content='50뭔 이상부터 송금할 수 있습니다')
             return
