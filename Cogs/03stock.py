@@ -31,12 +31,6 @@ class Stock(commands.Cog, name='주식'):
                 '현내보험': {
                     'price': 5000,
                     'change': 0},
-                '시민은행': {
-                    'price': 5000,
-                    'change': 0},
-                '엑스케이': {
-                    'price': 5000,
-                    'change': 0},
                 '동영화학': {
                     'price': 5000,
                     'change': 0},
@@ -59,15 +53,6 @@ class Stock(commands.Cog, name='주식'):
                     'price': 5000,
                     'change': 0},
                 '대환통운': {
-                    'price': 5000,
-                    'change': 0},
-                '자일운수': {
-                    'price': 5000,
-                    'change': 0},
-                '엑스오일': {
-                    'price': 5000,
-                    'change': 0},
-                '한직택배': {
                     'price': 5000,
                     'change': 0}
             }
@@ -114,8 +99,6 @@ class Stock(commands.Cog, name='주식'):
             '삼송': '삼송증권',
             '알지': '알지전자',
             '현내': '현내보험',
-            '시민': '시민은행',
-            '엑스': '엑스케이',
             '동영': '동영화학',
             '한와': '한와금융',
             '로데': '로데관광',
@@ -123,10 +106,7 @@ class Stock(commands.Cog, name='주식'):
             '하태': '하태식품',
             '소울': '소울우유',
             '남영': '남영유업',
-            '대환': '대환통운',
-            '자일': '자일운수',
-            '엑스': '엑스오일',
-            '한직': '한직택배'
+            '대환': '대환통운'
         }
         if not (name in list(stock_names.keys()) or name in list(stock_names.values())):
             return await warn(ctx=ctx, content='주식을 찾을 수 없습니다.')
@@ -152,8 +132,8 @@ class Stock(commands.Cog, name='주식'):
                            'price': stocks[stock_names]['price']}]
         with open('stocks/stocks.bin', 'wb') as f:
             dump(data, f)
-        writedata(id=ctx.author.id, item='point', value=str(int(getdata(id=ctx.author.id, item='point'))) - count * 'price': stocks[stock_names]['price'])
-        await sendEmbed(ctx=ctx, title='구매', content=f'{name}의 주식을 `{count}`주 구매했습니다.')
+        writedata(id=ctx.author.id, item='point', value=str(int(getdata(id=ctx.author.id, item='point'))) - count * stocks[stock_names]['price'])
+        await sendEmbed(ctx=ctx, title='매수', content=f'{name}의 주식을 `{count}`주 매수했습니다.')
     
     @commands.command(name='매도', aliases=['ㅁㄷ', '판매', 'sell'], help='주식을 팝니다', usage='[회사] [개수]')
     @can_use()
@@ -163,8 +143,6 @@ class Stock(commands.Cog, name='주식'):
             '삼송': '삼송증권',
             '알지': '알지전자',
             '현내': '현내보험',
-            '시민': '시민은행',
-            '엑스': '엑스케이',
             '동영': '동영화학',
             '한와': '한와금융',
             '로데': '로데관광',
@@ -172,10 +150,7 @@ class Stock(commands.Cog, name='주식'):
             '하태': '하태식품',
             '소울': '소울우유',
             '남영': '남영유업',
-            '대환': '대환통운',
-            '자일': '자일운수',
-            '엑스': '엑스오일',
-            '한직': '한직택배'
+            '대환': '대환통운'
         }
         if not (name in list(stock_names.keys()) or name in list(stock_names.values())):
             return await warn(ctx=ctx, content='주식을 찾을 수 없습니다.')
@@ -198,8 +173,21 @@ class Stock(commands.Cog, name='주식'):
         user_stocks = 0
         for i in data[name]:
             user_stocks += i['count']
-        if user_stocks < count:
-            return await warn(ctx=ctx, content='팔 주식이 부족합니다.')
+        if user_stocks < count: return await warn(ctx=ctx, content='팔 주식이 부족합니다.')
+        addmoney = 0
+        while count != 0:
+            if count >= data[name][0]['count']:
+                addmoney += data[name][0]['count'] * stocks[name]['price']
+                count -= data[name][0]['count']
+                del data[name][0]
+            else:
+                data[name][0]['count'] -= count
+                addmoney += count * stocks[name]['price']
+                count = 0
+        with open(f'stocks/users/{ctx.author.id}.bin', 'wb') as f:
+            dump(data, f)
+        writedata(id=ctx.author.id, item='point', value=str(int(getdata(id=ctx.author.id, item='point'))) + addmoney)
+        await sendEmbed(ctx=ctx, title='매도', content=f'{name}의 주식을 `{count}`주 매도했습니다.')
 
 def setup(bot):
     bot.add_cog(Stock(bot))
