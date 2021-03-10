@@ -15,6 +15,7 @@ class Stock(commands.Cog, name='주식'):
     def __init__(self, bot):
         self.bot = bot
         self.time = datetime.utcnow()
+        self.change_price.start()
     
     @commands.Cog.listener()
     async def on_ready(self):
@@ -58,24 +59,25 @@ class Stock(commands.Cog, name='주식'):
             }
             with open('stocks/stocks.bin', 'wb') as f:
                 dump(prices, f)
-            
-        @tasks.loop(seconds=150)
-        async def _change_price(self):
-            self.time = datetime.utcnow()
-            with open('stocks/stocks.bin', 'rb') as f:
-                prices = load(f)
-            for i in prices:
-                if prices[i]['price'] > 1000:
-                    prices[i]['change'] = randint(-75, 75)
-                else:
-                    prices[i]['change'] = randint(0, 150)
-                prices[i]['price'] += prices[i]['change']
-            with open('stocks/stocks.bin', 'wb') as f:
-                dump(prices, f)
+        print('stock-ok')
     
-    @commands.command(name='도표', aliases=['chart', 'ㄷㅍ', '차트'], help='주식들의 차트를 보여줍니다')
+    @tasks.loop(seconds=150)
+    async def change_price(self):
+        self.time = datetime.utcnow()
+        with open('stocks/stocks.bin', 'rb') as f:
+            prices = load(f)
+        for i in prices:
+            if prices[i]['price'] > 1000:
+                prices[i]['change'] = randint(-75, 75)
+            else:
+                prices[i]['change'] = randint(0, 150)
+            prices[i]['price'] += prices[i]['change']
+        with open('stocks/stocks.bin', 'wb') as f:
+            dump(prices, f)
+    
+    @commands.command(name='주식도표', aliases=['stock_chart', 'ㅈㅅㄷㅍ', '주식차트'], help='주식들의 차트를 보여줍니다')
     @can_use()
-    @commands.cooldown(1.0, 5, commands.BucketType.user)
+    @commands.cooldown(1.0, 3, commands.BucketType.user)
     async def _chart(self, ctx):
         with open('stocks/stocks.bin', 'rb') as f:
             data = load(f)
@@ -89,9 +91,9 @@ class Stock(commands.Cog, name='주식'):
                 stocks.append(f'= {data[i]["price"]}(■ 0) : {i}')
         stocks = "\n".join(stocks)
         time = (self.time + timedelta(seconds=150) - datetime.utcnow()).seconds
-        await sendEmbed(ctx=ctx, title='차트', content=f'```diff\n{stocks}```\n\n`바뀔때까지 남은 시간: {time}초`')
+        await sendEmbed(ctx=ctx, title='차트', content=f'```diff\n{stocks}```\n`바뀔때까지 남은 시간: {time}초`')
     
-    @commands.command(name='매수', aliases=['구매', 'ㅁㅅ', 'buy'], help='주식을 삽니다', usage='[회사] [개수]')
+    @commands.command(name='주식매수', aliases=['주식구매', 'ㅈㅅㅁㅅ', 'stock_buy'], help='주식을 삽니다', usage='[회사] [개수]')
     @can_use()
     @commands.cooldown(1.0, 3, commands.BucketType.user)
     async def _buy_stock(self, ctx, name, count:int='모두'):
@@ -120,22 +122,22 @@ class Stock(commands.Cog, name='주식'):
         with open('stocks/stocks.bin', 'rb') as f:
             stocks = load(f)
         if count in ['모두', 'ㅇㅇ', '올인']:
-            count = int(getdata(id=ctx.author.id, item='point')) // stocks[stock_names]['price']
+            count = int(getdata(id=ctx.author.id, item='point')) // stocks[name]['price']
         else:
             if count < 1: return await warn(ctx=ctx, content='살 주식의 개수를 1개 이상으로 입력해 주세요')
-            if count * stocks[stock_names]['price'] > int(getdata(id=ctx.author.id, item='point')): return await warn(ctx=ctx, content='돈이 부족합니다')
+            if count * stocks[name]['price'] > int(getdata(id=ctx.author.id, item='point')): return await warn(ctx=ctx, content='돈이 부족합니다')
         if name in data:
             data[name].append({'count': count,
-                               'price': stocks[stock_names]['price']})
+                               'price': stocks[name]['price']})
         else:
             data[name] = [{'count': count,
-                           'price': stocks[stock_names]['price']}]
-        with open('stocks/stocks.bin', 'wb') as f:
+                           'price': stocks[name]['price']}]
+        with open(f'stocks/users/{ctx.author.id}.bin', 'wb') as f:
             dump(data, f)
-        writedata(id=ctx.author.id, item='point', value=str(int(getdata(id=ctx.author.id, item='point'))) - count * stocks[stock_names]['price'])
+        writedata(id=ctx.author.id, item='point', value=str(int(getdata(id=ctx.author.id, item='point')) - count * stocks[name]['price']))
         await sendEmbed(ctx=ctx, title='매수', content=f'{name}의 주식을 `{count}`주 매수했습니다.')
     
-    @commands.command(name='매도', aliases=['ㅁㄷ', '판매', 'sell'], help='주식을 팝니다', usage='[회사] [개수]')
+    @commands.command(name='주식매도', aliases=['ㅈㅅㅁㄷ', '주식판매', 'stock_sell'], help='주식을 팝니다', usage='[회사] [개수]')
     @can_use()
     @commands.cooldown(1.0, 3, commands.BucketType.user)
     async def _sell(self, ctx, name, count:int='모두'):
@@ -166,28 +168,68 @@ class Stock(commands.Cog, name='주식'):
         with open('stocks/stocks.bin', 'rb') as f:
             stocks = load(f)
         if count in ['모두', 'ㅇㅇ', '올인']:
-            count = int(getdata(id=ctx.author.id, item='point')) // stocks[stock_names]['price']
+            count = 0
+            for i in data[name]:
+                count += i['count']
         else:
             if count < 1: return await warn(ctx=ctx, content='팔 주식의 개수를 1개 이상으로 입력해 주세요')
-            if count * stocks[stock_names]['price'] > int(getdata(id=ctx.author.id, item='point')): return await warn(ctx=ctx, content='돈이 부족합니다')
         user_stocks = 0
         for i in data[name]:
             user_stocks += i['count']
         if user_stocks < count: return await warn(ctx=ctx, content='팔 주식이 부족합니다.')
         addmoney = 0
+        counts = 0
         while count != 0:
             if count >= data[name][0]['count']:
                 addmoney += data[name][0]['count'] * stocks[name]['price']
                 count -= data[name][0]['count']
+                counts += data[name][0]['count']
                 del data[name][0]
             else:
                 data[name][0]['count'] -= count
+                counts += count
                 addmoney += count * stocks[name]['price']
                 count = 0
+        deliting = []
+        for i in data:
+            if len(data[i]) == 0: deliting.append(i)
+        for i in deliting:
+            del data[i]
         with open(f'stocks/users/{ctx.author.id}.bin', 'wb') as f:
             dump(data, f)
-        writedata(id=ctx.author.id, item='point', value=str(int(getdata(id=ctx.author.id, item='point'))) + addmoney)
-        await sendEmbed(ctx=ctx, title='매도', content=f'{name}의 주식을 `{count}`주 매도했습니다.')
+        writedata(id=ctx.author.id, item='point', value=str(int(getdata(id=ctx.author.id, item='point')) + addmoney))
+        await sendEmbed(ctx=ctx, title='매도', content=f'{name}의 주식을 `{counts}`주 매도했습니다.')
+    
+    @commands.command(name='주식계좌', aliases=['stock_account', 'ㅈㅅㄱㅈ', '주식가방'], help='가지고 있는 주식을 보여줍니다.')
+    @commands.cooldown(1.0, 3, commands.BucketType.user)
+    @can_use()
+    async def _account_stock(self, ctx):
+        if not isfile(f'stocks/users/{ctx.author.id}.bin'): return await warn(ctx=ctx, content='가지고 있는 주식이 없습니다')
+        with open(f'stocks/users/{ctx.author.id}.bin', 'rb') as f:
+            data = load(f)
+        if len(data) == 0: return await warn(ctx=ctx, content='가지고 있는 주식이 없습니다')
+        with open(f'stocks/stocks.bin', 'rb') as f:
+            stocks = load(f)
+        user_stocks = {}
+        for i in data:
+            user_stocks[i] = 0
+            for j in data[i]:
+                user_stocks[i] += (stocks[i]['price'] - j['price']) * j['count']
+        #user_stocks는 각 주식별 차익
+        counts = []
+        for i in data:
+            counts.append(0)
+            for j in data[i]:
+                counts[-1] += j['count']
+        content = []
+        for i in enumerate(user_stocks):
+            if user_stocks[i[1]] > 0:
+                content.append(f'+ {i[1]} {counts[i[0]]}주 : {abs(user_stocks[i[1]])}')
+            elif user_stocks[i[1]] == 0:
+                content.append(f'= {i[1]} {counts[i[0]]}주 : 0')
+            else:
+                content.append(f'- {i[1]} {counts[i[0]]}주 : {abs(user_stocks[i[1]])}')
+        await sendEmbed(ctx=ctx, title='계좌', content='```diff\n' + '\n'.join(content) + '```')
 
 def setup(bot):
     bot.add_cog(Stock(bot))

@@ -33,7 +33,9 @@ async def presence():
 
 @bot.event
 async def on_ready():
-    for filename in listdir("Cogs"):
+    cogs = listdir("Cogs")
+    cogs.sort()
+    for filename in cogs:
         if filename.endswith(".py"):    
             bot.load_extension(f"Cogs.{filename[:-3]}")
             print(f"Cogs.{filename[:-3]}")
@@ -58,7 +60,9 @@ async def reload_commands(ctx, *, extension='all'):
     if extension == 'all':
         embed = discord.Embed(title='Reloading All Category', color=embedcolor)
         msg = await ctx.send(embed=embed)
-        for i in listdir('Cogs'):
+        cogs = listdir("Cogs")
+        cogs.sort()
+        for i in cogs:
             if i.endswith('.py'):
                 try: bot.unload_extension(f'Cogs.{i[:-3]}')
                 except: pass
