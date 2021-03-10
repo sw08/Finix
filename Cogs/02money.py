@@ -89,10 +89,24 @@ class Money(commands.Cog, name='경제'):
         with open('rank/check.json', 'r') as f:
             data = json.load(f)
         if data['len'] == '5': return
-        if data['date'] != date: data['len'] = '0'
-        data[str(int(data['len'])+1)]['id'] = str(ctx.author.id)
-        data[str(int(data['len'])+1)]['time'] = writingDate
+        if data['date'] != date:
+            data = {
+                'date': date,
+                '1': {'id': 'none',
+                      'time': 'none'},
+                '2': {'id': 'none',
+                      'time': 'none'},  
+                '3': {'id': 'none',
+                      'time': 'none'},
+                '4': {'id': 'none',
+                      'time': 'none'},
+                '5': {'id': 'none',
+                      'time': 'none'},
+                'len': '0'
+                }
         data['len'] = str(int(data['len']) + 1)
+        data[data['len']]['id'] = str(ctx.author.id)
+        data[data['len']]['time'] = writingDate
         data['date'] = date
         with open('rank/check.json', 'w') as f:
             json.dump(data, f)

@@ -106,7 +106,7 @@ class Stock(commands.Cog, name='주식'):
         time = (self.time + timedelta(seconds=150) - datetime.utcnow()).seconds
         await sendEmbed(ctx=ctx, title='차트', content=f'```diff\n{stocks}```\n\n`바뀔때까지 남은 시간: {time}초`')
     
-    @commands.command(name='매수', aliases=['구매', 'ㅁㅅ', 'buy'], help='주식을 삽니다', usage='[주식 이름] [개수]')
+    @commands.command(name='매수', aliases=['구매', 'ㅁㅅ', 'buy'], help='주식을 삽니다', usage='[회사] [개수]')
     @can_use()
     @commands.cooldown(1.0, 3, commands.BucketType.user)
     async def _buy_stock(self, ctx, name, count:int='모두'):
@@ -129,7 +129,7 @@ class Stock(commands.Cog, name='주식'):
             '한직': '한직택배'
         }
         if not (name in list(stock_names.keys()) or name in list(stock_names.values())):
-            await warn(ctx=ctx, content='주식을 찾을 수 없습니다.')
+            return await warn(ctx=ctx, content='주식을 찾을 수 없습니다.')
         if name in list(stock_names.keys()):
             name = stock_names[name]
         if isfile(f'stocks/users/{ctx.author.id}.bin'):
@@ -154,6 +154,52 @@ class Stock(commands.Cog, name='주식'):
             dump(data, f)
         writedata(id=ctx.author.id, item='point', value=str(int(getdata(id=ctx.author.id, item='point'))) - count * 'price': stocks[stock_names]['price'])
         await sendEmbed(ctx=ctx, title='구매', content=f'{name}의 주식을 `{count}`주 구매했습니다.')
+    
+    @commands.command(name='매도', aliases=['ㅁㄷ', '판매', 'sell'], help='주식을 팝니다', usage='[회사] [개수]')
+    @can_use()
+    @commands.cooldown(1.0, 3, commands.BucketType.user)
+    async def _sell(self, ctx, name, count:int='모두'):
+        stock_names = {
+            '삼송': '삼송증권',
+            '알지': '알지전자',
+            '현내': '현내보험',
+            '시민': '시민은행',
+            '엑스': '엑스케이',
+            '동영': '동영화학',
+            '한와': '한와금융',
+            '로데': '로데관광',
+            '동안': '동안출판',
+            '하태': '하태식품',
+            '소울': '소울우유',
+            '남영': '남영유업',
+            '대환': '대환통운',
+            '자일': '자일운수',
+            '엑스': '엑스오일',
+            '한직': '한직택배'
+        }
+        if not (name in list(stock_names.keys()) or name in list(stock_names.values())):
+            return await warn(ctx=ctx, content='주식을 찾을 수 없습니다.')
+        if name in list(stock_names.keys()):
+            name = stock_names[name]
+        if isfile(f'stocks/users/{ctx.author.id}.bin'):
+            with open(f'stocks/users/{ctx.author.id}.bin', 'rb') as f:
+                data = load(f)
+        else:
+            return await warn(ctx=ctx, content=f'{ctx.author.mention}님은 주식을 갖고 있지 않습니다.')
+        if not name in data:
+            return await warn(ctx=ctx, content=f'{ctx.author.mention}님은 주식을 갖고 있지 않습니다.')
+        with open('stocks/stocks.bin', 'rb') as f:
+            stocks = load(f)
+        if count in ['모두', 'ㅇㅇ', '올인']:
+            count = int(getdata(id=ctx.author.id, item='point')) // stocks[stock_names]['price']
+        else:
+            if count < 1: return await warn(ctx=ctx, content='팔 주식의 개수를 1개 이상으로 입력해 주세요')
+            if count * stocks[stock_names]['price'] > int(getdata(id=ctx.author.id, item='point')): return await warn(ctx=ctx, content='돈이 부족합니다')
+        user_stocks = 0
+        for i in data[name]:
+            user_stocks += i['count']
+        if user_stocks < count:
+            return await warn(ctx=ctx, content='팔 주식이 부족합니다.')
 
 def setup(bot):
     bot.add_cog(Stock(bot))
