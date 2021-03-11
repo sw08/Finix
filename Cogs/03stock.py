@@ -229,11 +229,11 @@ class Stock(commands.Cog, name='주식'):
         content = []
         for i in enumerate(user_stocks):
             if user_stocks[i[1]] > 0:
-                content.append(f'+ {i[1]} {counts[i[0]]}주 : {abs(user_stocks[i[1]])}')
+                content.append(f'+ {i[1]} {counts[i[0]]}주 : ▲ {abs(user_stocks[i[1]])}')
             elif user_stocks[i[1]] == 0:
-                content.append(f'= {i[1]} {counts[i[0]]}주 : 0')
+                content.append(f'= {i[1]} {counts[i[0]]}주 : ■ 0')
             else:
-                content.append(f'- {i[1]} {counts[i[0]]}주 : {abs(user_stocks[i[1]])}')
+                content.append(f'- {i[1]} {counts[i[0]]}주 : ▼ {abs(user_stocks[i[1]])}')
         await sendEmbed(ctx=ctx, title='계좌', content='```diff\n' + '\n'.join(content) + '```')
 
 def setup(bot):
