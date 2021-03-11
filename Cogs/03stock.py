@@ -74,6 +74,11 @@ class Stock(commands.Cog, name='주식'):
             prices[i]['price'] += prices[i]['change']
         with open('stocks/stocks.bin', 'wb') as f:
             dump(prices, f)
+
+    def addzero(self, n):
+        if len(str(n)) == 1:
+            return '0' + str(n)
+        return n
     
     @commands.command(name='주식도표', aliases=['stock_chart', 'ㅈㅅㄷㅍ', '주식차트'], help='주식들의 차트를 보여줍니다')
     @can_use()
@@ -84,11 +89,11 @@ class Stock(commands.Cog, name='주식'):
         stocks = list()
         for i in data:
             if data[i]['change'] > 0:
-                stocks.append(f'+ {data[i]["price"]}(▲ {abs(data[i]["change"])}) : {i}')
+                stocks.append(f'+ {data[i]["price"]}(▲ {self.addzero(abs(data[i]["change"]))}) : {i}')
             elif data[i]['change'] < 0:
-                stocks.append(f'- {data[i]["price"]}(▼ {abs(data[i]["change"])}) : {i}')
+                stocks.append(f'- {data[i]["price"]}(▼ {self.addzero(abs(data[i]["change"]))}) : {i}')
             else:
-                stocks.append(f'= {data[i]["price"]}(■ 0) : {i}')
+                stocks.append(f'= {data[i]["price"]}(■ 00) : {i}')
         stocks = "\n".join(stocks)
         time = (self.time + timedelta(seconds=150) - datetime.utcnow()).seconds
         await sendEmbed(ctx=ctx, title='차트', content=f'```diff\n{stocks}```\n`바뀔때까지 남은 시간: {time}초`')
