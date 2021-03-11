@@ -62,7 +62,7 @@ class Money(commands.Cog, name='경제'):
         if getdata(id=ctx.author.id, item='lastCheck') == date:
             await warn(ctx=ctx, content='오늘은 이미 출석했습니다. 내일 출석해 주십시오.')
             return
-        point = str(int(getdata(id=ctx.author.id, item='point')) + 50 * randint(2, 4))
+        point = str(int(getdata(id=ctx.author.id, item='point')) + 500 * randint(2, 4))
         writedata(id=ctx.author.id, item='point', value=point)
         writedata(id=ctx.author.id, item='coundCheck', value=str(1+int(getdata(id=ctx.author.id, item='countCheck'))))
         writedata(id=ctx.author.id, item='lastCheck', value=date)
