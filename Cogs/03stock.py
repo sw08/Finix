@@ -134,6 +134,8 @@ class Stock(commands.Cog, name='주식'):
             stocks = load(f)
         if count in ['모두', 'ㅇㅇ', '올인', '최대']:
             count = int(getdata(id=ctx.author.id, item='point')) // stocks[name]['price']
+            if count == 0:
+                return await warn(ctx=ctx, content='돈이 부족합니다')
         else:
             count = int(count)
             if count < 1: return await warn(ctx=ctx, content='살 주식의 개수를 1개 이상으로 입력해 주세요')
@@ -144,6 +146,11 @@ class Stock(commands.Cog, name='주식'):
         else:
             data[name] = [{'count': count,
                            'price': stocks[name]['price']}]
+        deliting = []
+        for i in data:
+            if len(data[i]) == 0: deliting.append(i)
+        for i in deliting:
+            del data[i]
         with open(f'stocks/users/{ctx.author.id}.bin', 'wb') as f:
             dump(data, f)
         writedata(id=ctx.author.id, item='point', value=str(int(getdata(id=ctx.author.id, item='point')) - count * stocks[name]['price']))
