@@ -89,7 +89,7 @@ class Stock(commands.Cog, name='주식'):
     @stocks.command(name='도표', aliases=['chart', 'ㄷㅍ', '차트'], help='주식들의 차트를 보여줍니다')
     @can_use()
     @commands.cooldown(1.0, 3, commands.BucketType.user)
-    async def _chart(self, ctx):
+    async def _chart_stock(self, ctx):
         with open('stocks/stocks.bin', 'rb') as f:
             data = load(f)
         stocks = list()
@@ -159,7 +159,7 @@ class Stock(commands.Cog, name='주식'):
     @stocks.command(name='매도', aliases=['ㅁㄷ', '판매', 'sell'], help='주식을 팝니다', usage='[회사] [개수]')
     @can_use()
     @commands.cooldown(1.0, 3, commands.BucketType.user)
-    async def _sell(self, ctx, name, count='모두'):
+    async def _sell_stock(self, ctx, name, count='모두'):
         stock_names = {
             '삼송': '삼송증권',
             '알지': '알지전자',

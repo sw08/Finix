@@ -4,3 +4,4 @@ koreanbots
 EZPaginator
 discord
 pillow
+jishaku
