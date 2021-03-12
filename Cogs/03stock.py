@@ -80,7 +80,7 @@ class Stock(commands.Cog, name='주식'):
             return '0' + str(n)
         return n
     
-    @commands.group('주식', aliases=['stock', 'ㅈㅅ'], invoke_without_command=True)
+    @commands.group('주식', aliases=['stock', 'ㅈㅅ'], help='주식 관련 명령어를 실행합니다.', usage='<도표/매수/매도/계좌>', cog_name='경제', invoke_without_command=True)
     @can_use()
     @commands.cooldown(1.0, 3, commands.BucketType.user)
     async def stocks(self, ctx):
