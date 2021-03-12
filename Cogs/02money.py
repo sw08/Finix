@@ -88,7 +88,6 @@ class Money(commands.Cog, name='경제'):
                 }, f)
         with open('rank/check.json', 'r') as f:
             data = json.load(f)
-        if data['len'] == '5': return
         if data['date'] != date:
             data = {
                 'date': date,
@@ -104,6 +103,7 @@ class Money(commands.Cog, name='경제'):
                       'time': 'none'},
                 'len': '0'
                 }
+        if data['len'] == '5': return
         data['len'] = str(int(data['len']) + 1)
         data[data['len']]['id'] = str(ctx.author.id)
         data[data['len']]['time'] = writingDate
