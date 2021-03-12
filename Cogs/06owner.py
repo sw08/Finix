@@ -154,10 +154,10 @@ class Owner(commands.Cog, name='관리자'):
         channel = await (self.bot.get_user(int(ctx.channel.name))).create_dm()
         while True:
             answer = await self.bot.wait_for('message', check=lambda m: m.channel == ctx.channel and m.author == ctx.author)
-            if answer.content == '문의종료':
+            if answer.content in ['문의종료', '종료', '끝', '문의끝', '완료']:
                 await channel.send('문의가 종료되었습니다.')
                 return await ctx.send('문의 끝')
-            await channel.send(f'{ctx.author.mention}: ```{answer}```')
+            await channel.send(f'{ctx.author.mention}: ```{answer.content}```')
             await answer.add_reaction('<a:CheckGIF2:808647121061675049>')
 
 def setup(bot):

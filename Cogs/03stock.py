@@ -80,7 +80,13 @@ class Stock(commands.Cog, name='주식'):
             return '0' + str(n)
         return n
     
-    @commands.command(name='주식도표', aliases=['stock_chart', 'ㅈㅅㄷㅍ', '주식차트'], help='주식들의 차트를 보여줍니다')
+    @commands.group('주식', aliases=['stock', 'ㅈㅅ'], invoke_without_command=True)
+    @can_use()
+    @commands.cooldown(1.0, 3, commands.BucketType.user)
+    async def stocks(self, ctx):
+        await sendEmbed(ctx=ctx, title='주식 도움말', content='`ㅍ주식 (도표, 매수, 매도, 계좌)`')
+    
+    @stocks.command(name='도표', aliases=['chart', 'ㄷㅍ', '차트'], help='주식들의 차트를 보여줍니다')
     @can_use()
     @commands.cooldown(1.0, 3, commands.BucketType.user)
     async def _chart(self, ctx):
@@ -98,10 +104,10 @@ class Stock(commands.Cog, name='주식'):
         time = (self.time + timedelta(seconds=150) - datetime.utcnow()).seconds
         await sendEmbed(ctx=ctx, title='차트', content=f'```diff\n{stocks}```\n`바뀔때까지 남은 시간: {time}초`')
     
-    @commands.command(name='주식매수', aliases=['주식구매', 'ㅈㅅㅁㅅ', 'stock_buy'], help='주식을 삽니다', usage='[회사] [개수]')
+    @stocks.command(name='매수', aliases=['구매', 'ㅁㅅ', 'buy'], help='주식을 삽니다', usage='[회사] [개수]')
     @can_use()
     @commands.cooldown(1.0, 3, commands.BucketType.user)
-    async def _buy_stock(self, ctx, name, count:int='모두'):
+    async def _buy_stock(self, ctx, name, count='모두'):
         stock_names = {
             '삼송': '삼송증권',
             '알지': '알지전자',
@@ -126,11 +132,12 @@ class Stock(commands.Cog, name='주식'):
             data = {}
         with open('stocks/stocks.bin', 'rb') as f:
             stocks = load(f)
-        if count in ['모두', 'ㅇㅇ', '올인']:
+        if count in ['모두', 'ㅇㅇ', '올인', '최대']:
             count = int(getdata(id=ctx.author.id, item='point')) // stocks[name]['price']
         else:
+            count = int(count)
             if count < 1: return await warn(ctx=ctx, content='살 주식의 개수를 1개 이상으로 입력해 주세요')
-            if count * stocks[name]['price'] > int(getdata(id=ctx.author.id, item='point')): return await warn(ctx=ctx, content='돈이 부족합니다')
+        if count * stocks[name]['price'] > int(getdata(id=ctx.author.id, item='point')): return await warn(ctx=ctx, content='돈이 부족합니다')
         if name in data:
             data[name].append({'count': count,
                                'price': stocks[name]['price']})
@@ -142,10 +149,10 @@ class Stock(commands.Cog, name='주식'):
         writedata(id=ctx.author.id, item='point', value=str(int(getdata(id=ctx.author.id, item='point')) - count * stocks[name]['price']))
         await sendEmbed(ctx=ctx, title='매수', content=f'{name}의 주식을 `{count}`주 매수했습니다.')
     
-    @commands.command(name='주식매도', aliases=['ㅈㅅㅁㄷ', '주식판매', 'stock_sell'], help='주식을 팝니다', usage='[회사] [개수]')
+    @stocks.command(name='매도', aliases=['ㅁㄷ', '판매', 'sell'], help='주식을 팝니다', usage='[회사] [개수]')
     @can_use()
     @commands.cooldown(1.0, 3, commands.BucketType.user)
-    async def _sell(self, ctx, name, count:int='모두'):
+    async def _sell(self, ctx, name, count='모두'):
         stock_names = {
             '삼송': '삼송증권',
             '알지': '알지전자',
@@ -172,11 +179,12 @@ class Stock(commands.Cog, name='주식'):
             return await warn(ctx=ctx, content=f'{ctx.author.mention}님은 주식을 갖고 있지 않습니다.')
         with open('stocks/stocks.bin', 'rb') as f:
             stocks = load(f)
-        if count in ['모두', 'ㅇㅇ', '올인']:
+        if count in ['모두', 'ㅇㅇ', '올인', '최대']:
             count = 0
             for i in data[name]:
                 count += i['count']
         else:
+            count = int(count)
             if count < 1: return await warn(ctx=ctx, content='팔 주식의 개수를 1개 이상으로 입력해 주세요')
         user_stocks = 0
         for i in data[name]:
@@ -205,9 +213,9 @@ class Stock(commands.Cog, name='주식'):
         writedata(id=ctx.author.id, item='point', value=str(int(getdata(id=ctx.author.id, item='point')) + addmoney))
         await sendEmbed(ctx=ctx, title='매도', content=f'{name}의 주식을 `{counts}`주 매도했습니다.')
     
-    @commands.command(name='주식계좌', aliases=['stock_account', 'ㅈㅅㄱㅈ', '주식가방'], help='가지고 있는 주식을 보여줍니다.')
-    @commands.cooldown(1.0, 3, commands.BucketType.user)
+    @stocks.command(name='계좌', aliases=['account', 'ㄱㅈ', '가방'], help='가지고 있는 주식을 보여줍니다.')
     @can_use()
+    @commands.cooldown(1.0, 3, commands.BucketType.user)
     async def _account_stock(self, ctx):
         if not isfile(f'stocks/users/{ctx.author.id}.bin'): return await warn(ctx=ctx, content='가지고 있는 주식이 없습니다')
         with open(f'stocks/users/{ctx.author.id}.bin', 'rb') as f:
