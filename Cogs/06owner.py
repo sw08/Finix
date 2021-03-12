@@ -163,12 +163,12 @@ class Owner(commands.Cog, name='관리자'):
     @commands.command(name='깃풀', aliases=['git pull', '깃허브 풀', 'ㄱㅍ'])
     @is_owner()
     async def _git(self, ctx, type_doing):
-        result = popen('git pull').read()
-        await sendEmbed(ctx=ctx, content=f'완료.\n```{result}```')
         if not isfile('restarting.py'):
             with open('restarting.py', 'w') as f:
                 f.write('import os, time\ntime.sleep(3)\nos.system("python bot.py")')
         popen('python restarting.py')
+        result = popen('git pull').read()
+        await sendEmbed(ctx=ctx, content=f'완료.\n```{result}```')
         quit()
 
 def setup(bot):
