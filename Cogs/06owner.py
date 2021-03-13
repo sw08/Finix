@@ -168,7 +168,7 @@ class Owner(commands.Cog, name='관리자'):
                 f.write('import os, time\ntime.sleep(3)\nos.system("python bot.py")')
         popen('python restarting.py')
         result = popen('git pull').read()
-        await sendEmbed(ctx=ctx, content=f'완료.\n```{result}```')
+        await sendEmbed(ctx=ctx, title='깃 풀', content=f'완료.\n```{result}```')
         await self.bot.logout()
 
 def setup(bot):
