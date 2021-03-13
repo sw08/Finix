@@ -70,12 +70,18 @@ class Main(commands.Cog, name='잡다한것'):
     @commands.max_concurrency(1.0, commands.BucketType.user)
     @commands.cooldown(1.0, 5, commands.BucketType.user)
     async def _barcode(self, ctx, type_code, *, content):
-        types = ['ean8', 'ean13', 'ean14', 'code128', 'code39', 'pzn', 'issn', 'isbn13', 'isbn10', 'jan', 'upca']
-        if type_code.lower() not in types: await warn(ctx=ctx, content=f'바코드의 타입을 찾을 수 없습니다.\n타입 목록:\n```{", ".join([i.upper() for i in types])}```')
-        img = get(type_code.lower(), content, writer=ImageWriter())
-        file = img.save(type_code)
-        await ctx.send(file=discord.File(file))
-        remove(file)
+        try:
+            types = ['ean8', 'ean13', 'ean14', 'code128', 'code39', 'pzn', 'issn', 'isbn13', 'isbn10', 'jan', 'upca']
+            if type_code.lower() not in types: await warn(ctx=ctx, content=f'바코드의 타입을 찾을 수 없습니다.\n타입 목록:\n```{", ".join([i.upper() for i in types])}```')
+            img = get(type_code.lower(), content, writer=ImageWriter())
+            file = img.save(type_code)
+            await ctx.send(file=discord.File(file))
+            remove(file)
+        except Exception as error:
+            if str(error).endswith('ISBN must start with 978 or 979.'): return await warn(ctx=ctx, content='이 타입은 코드가 978이나 979로 시작해야 합니다')
+            elif str(error).endswith('can only contain numbers.'): return await warn(ctx=ctx, content='이 타입은 코드에 숫자만 들어갈 수 있습니다.')
+            elif str(error).endswith('Command raised an exception: NumberOfDigitsError:'): return await warn(ctx=ctx, content='내용의 글자 수가 올바르지 않습니다')
+            else: return await warn(ctx=ctx, content='저런! 에러가 발생했습니다.')
 
 def setup(bot):
     bot.add_cog(Main(bot))

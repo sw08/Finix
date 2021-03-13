@@ -169,7 +169,7 @@ class Owner(commands.Cog, name='관리자'):
         popen('python restarting.py')
         result = popen('git pull').read()
         await sendEmbed(ctx=ctx, content=f'완료.\n```{result}```')
-        quit()
+        await self.bot.logout()
 
 def setup(bot):
     bot.add_cog(Owner(bot))
