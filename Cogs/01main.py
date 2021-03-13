@@ -82,6 +82,15 @@ class Main(commands.Cog, name='잡다한것'):
             elif str(error).endswith('can only contain numbers.'): return await warn(ctx=ctx, content='이 타입은 코드에 숫자만 들어갈 수 있습니다.')
             elif str(error).endswith('Command raised an exception: NumberOfDigitsError:'): return await warn(ctx=ctx, content='내용의 글자 수가 올바르지 않습니다')
             else: return await warn(ctx=ctx, content='저런! 에러가 발생했습니다.')
+    
+    @commands.command(name='첫메시지', aliases=['firstmessage', 'ㅊㅁㅅㅈ', '처음메시지'], help='채널의 첫 메시지를 보여줍니다.', usage='<채널 멘션>')
+    @can_use()
+    @commands.cooldown(1.0, 2.5, commands.BucketType.user)
+    async def _channelInfo(self, ctx, channel:discord.TextChannel=None):
+        if channel is None:
+            channel = ctx.channel
+        message = (await channel.history().flatten())[0]
+        await sendEmbed(ctx=ctx, title=f'{channel.name} 채널의 첫 메시지', content=f'[여기를 클릭하세요](https://discord.com/channels/{ctx.guild.id}/{ctx.channel.id}/{message.id})')
 
 def setup(bot):
     bot.add_cog(Main(bot))
