@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands, tasks
 from pickle import load
 from Tools.var import prefix, embedcolor, mainprefix, version
-from Tools.func import warn, errorlog, commands.is_owner
+from Tools.func import warn, errorlog
 from datetime import datetime
 from os import listdir, chdir
 import asyncio
@@ -33,7 +33,7 @@ async def presence():
 
 @bot.event
 async def on_ready():
-    self.bot.owner_ids = [745848200195473490, 441202161481809922]
+    bot.owner_ids = [745848200195473490, 441202161481809922]
     cogs = listdir("Cogs")
     cogs.sort()
     for filename in cogs:
