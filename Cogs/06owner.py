@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from Tools.var import embedcolor, mainprefix
 import ast
-from Tools.func import is_owner, sendEmbed, log, getnow, getdata, writedata, warn
+from Tools.func import sendEmbed, log, getnow, getdata, writedata, warn
 import pickle
 import json
 import os
@@ -30,7 +30,7 @@ class Owner(commands.Cog, name='관리자'):
         self.bot = bot
     
     @commands.command(name='실행', aliases=['컴파일', 'eval', 'ㄱ'], help='소스코드를 실행합니다', usage='[소스 코드]')
-    @is_owner()
+    @commands.is_owner()
     async def eval(self, ctx, *, cmd):
         embed = discord.Embed(title='실행', description='', color=embedcolor)
         embed.add_field(name='**INPUT**', value=f'```py\n{cmd}```', inline=False)
@@ -68,7 +68,7 @@ class Owner(commands.Cog, name='관리자'):
         await ctx.send(embed=embed)
     
     @commands.command(name='밴', aliases=['차단', 'ban', 'ㅂ'], help='봇에게서 차단하는 명령어입니다.', usage='[유저] [이유]')
-    @is_owner()
+    @commands.is_owner()
     async def _ban(self, ctx, user: discord.Member, *, reason):
         if isfile('banned.bin'):
             with open("banned.bin", "rb") as f: # 파일 읽기 (만약 파일이 있을 경우)
@@ -95,7 +95,7 @@ class Owner(commands.Cog, name='관리자'):
         await log(embed=discord.Embed(title='밴', description=f'{user.mention}님이 {reason}이라는 이유로 피닉스로부터 차단당하셨습니다.\n처리자: {ctx.author.mention}\n{(str(ctx.message.created_at))[:-7]}', color=embedcolor), bot=self.bot)
     
     @commands.command(name='언밴', aliases=['차단해제', 'unban', 'ㅇㅂ'], help='봇에게서 차단을 해제하는 명령어입니다.', usage='[유저] [이유]')
-    @is_owner()
+    @commands.is_owner()
     async def _unban(self, ctx, user: discord.Member, *, reason):
         if isfile('banned.bin'):
             with open("banned.bin", "rb") as f: # 파일 읽기 (만약 파일이 있을 경우)
@@ -121,7 +121,7 @@ class Owner(commands.Cog, name='관리자'):
         await log(embed=discord.Embed(title='밴', description=f'{user.mention}님이 {reason}이라는 이유로 피닉스로부터 차단해제 되셨습니다.\n처리자: {ctx.author.mention}\n{(str(ctx.message.created_at))[:-7]}', color=embedcolor), bot=self.bot)
     
     @commands.command(name='공지보내기', aliases=['공지발행', 'post', 'ㅂㅎ'], help='공지를 발행합니다.', usage='[공지 내용]')
-    @is_owner()
+    @commands.is_owner()
     async def _post(self, ctx, *, content):
         if not isdir('posts'):
             makedirs('posts')
@@ -141,7 +141,7 @@ class Owner(commands.Cog, name='관리자'):
         await sendEmbed(ctx=ctx, title='공지발행', content='공지 발행완료')
     
     @commands.command(name='관리자송금', aliases=['강제송금', 'addpoint', 'ㄱㅅ'], help='포인트 수정 명령어입니다.', usage='[유저] [돈]')
-    @is_owner()
+    @commands.is_owner()
     async def _addpoint(self, ctx, user:discord.Member, addpoint:int):
         point = int(getdata(id=user.id, item='point'))
         point += addpoint
@@ -150,7 +150,7 @@ class Owner(commands.Cog, name='관리자'):
         await log(embed=discord.Embed(title='관리자송금', description=f'{user.mention}님의 돈에 `{addpoint}`가 추가되었습니다.\n처리자: {ctx.author.mention}\n{(str(ctx.message.created_at))[:-7]}', color=embedcolor), bot=self.bot)
     
     @commands.command(name='답변', aliases=['ㅁㅇㄷㅂ', '문의답변', 'answer'], help='DM으로 온 문의에 답변하는 명령어입니다.', usage='[답변할 내용]')
-    @is_owner()
+    @commands.is_owner()
     async def _answer(self, ctx, *, answer=None):
         if ctx.channel.category_id != 812625850565525525:
             return await warn(ctx=ctx, content='문의채널이 아닙니다')
@@ -167,7 +167,7 @@ class Owner(commands.Cog, name='관리자'):
             await answer.add_reaction('<a:CheckGIF2:808647121061675049>')
     
     @commands.command(name='깃풀', aliases=['git pull', '깃허브 풀', 'ㄱㅍ'])
-    @is_owner()
+    @commands.is_owner()
     async def _git(self, ctx):
         if not isfile('restarting.py'):
             with open('restarting.py', 'w') as f:

@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands, tasks
 from pickle import load
 from Tools.var import prefix, embedcolor, mainprefix, version
-from Tools.func import warn, errorlog, is_owner
+from Tools.func import warn, errorlog, commands.is_owner
 from datetime import datetime
 from os import listdir, chdir
 import asyncio
@@ -33,6 +33,7 @@ async def presence():
 
 @bot.event
 async def on_ready():
+    self.bot.owner_ids = [745848200195473490, 441202161481809922]
     cogs = listdir("Cogs")
     cogs.sort()
     for filename in cogs:
@@ -45,19 +46,19 @@ async def on_ready():
     await bot.change_presence(status=discord.Status.online, activity=(await presence()))
 
 @bot.command(name="로드", aliases=['모듈로드', 'load', 'ㄹㄷ'])
-@is_owner()
+@commands.is_owner()
 async def load_commands(ctx, *, extension):
     bot.load_extension(f"Cogs.{extension}")
     await ctx.send(embed=discord.Embed(title='Load', description=f'Successfully Loaded {extension}', color=embedcolor))
 
 @bot.command(name="언로드", aliases=['모듈언로드', 'unload', 'ㅇㄹㄷ'])
-@is_owner()
+@commands.is_owner()
 async def unload_commands(ctx, *, extension):
     bot.unload_extension(f"Cogs.{extension}")
     await ctx.send(embed=discord.Embed(title='Unload', description=f'Successfully Unloaded {extension}', color=embedcolor))
 
 @bot.command(name='리로드', aliases=['모듈리로드', 'reload', 'ㄹㄹㄷ'])
-@is_owner()
+@commands.is_owner()
 async def reload_commands(ctx, *, extension='all'):
     if extension == 'all':
         embed = discord.Embed(title='Reloading All Category', color=embedcolor)
@@ -91,7 +92,7 @@ async def reload_commands(ctx, *, extension='all'):
         await msg.edit(embed=embed)
         embed.remove_field(index=0)
         await msg.edit(embed=discord.Embed(title='Finished', description=f'Reloading {extension} Finished', color=embedcolor))
-1
+
 @bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.errors.CommandOnCooldown):
