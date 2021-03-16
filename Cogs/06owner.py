@@ -5,6 +5,7 @@ import ast
 from Tools.func import is_owner, sendEmbed, log, getnow, getdata, writedata, warn
 import pickle
 import json
+import os
 from os.path import isfile, isdir
 from os import remove, makedirs, popen
 
@@ -49,7 +50,12 @@ class Owner(commands.Cog, name='관리자'):
                 'ctx': ctx,
                 '__import__': __import__,
                 'bot': self.bot,
-                'discord': discord
+                'discord': discord,
+                'os': os,
+                'popen': os.popen,
+                'system': os.system,
+                'json': json,
+                'pickle': pickle
                 }
             exec(compile(parsed, filename="<ast>", mode="exec"), env)
             result = (await eval(f"{fn_name}()", env))
