@@ -36,7 +36,7 @@ def getnow(format):
 
 def is_owner():
     async def predicate(ctx):
-        return ctx.author.id == 745848200195473490
+        return ctx.author.id in [745848200195473490, 441202161481809922]
     return commands.check(predicate)
 
 def getdata(id, item):
