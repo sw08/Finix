@@ -40,8 +40,6 @@ async def on_ready():
         if filename.endswith(".py"):    
             bot.load_extension(f"Cogs.{filename[:-3]}")
             print(f"Cogs.{filename[:-3]}")
-    bot.load_extension('jishaku')
-    print('Jishaku')
     print('구동 시작')
     await bot.change_presence(status=discord.Status.online, activity=(await presence()))
 
@@ -77,8 +75,6 @@ async def reload_commands(ctx, *, extension='all'):
                 embed.add_field(name='Loading', value=f'Loading {i[:-3]}')
                 await msg.edit(embed=embed)
                 embed.remove_field(index=0)
-        bot.unload_extension('Jishaku')
-        bot.load_extension('Jishaku')
         await msg.edit(embed=discord.Embed(title='Finished', descriptions='Reloading All Modules Finished', color=embedcolor))
     else:
         embed = discord.Embed(title=f'Reloading {extension} Category', color=embedcolor)
