@@ -12,7 +12,7 @@ class Math(commands.Cog, name='수학'):
     def __init__(self, bot):
         self.bot = bot
     
-    @commands.command(name='근의공식', aliases=['이차방정식', 'quadEquation', 'ㅇㅊ'], help='이차방정식을 풀어줍니다, ax₂ + bx + c = 0', usage='[a] [b] [c]')
+    @commands.command(name='이차방정식', aliases=['2차방정식', 'quadraticEquation', '2ㅊㅂㅈㅅ'], help='이차방정식을 풀어줍니다, ax₂ + bx + c = 0', usage='[a] [b] [c]')
     @commands.cooldown(1.0, 7, commands.BucketType.user)
     @can_use()
     async def _quadEquation(self, ctx, a:float, b:float, c:float):
@@ -41,10 +41,16 @@ class Math(commands.Cog, name='수학'):
     
     @commands.command(name='사칙연산', aliases=['산수', 'ㅅㅊㅇㅅ', 'calculate'], help='간단한 사칙연산을 해 줍니다. 곱하기는 *, 나누기는 /로 처리합니다', usage='[수] [연산자] [수]')
     @can_use()
-    async def _calculate(self, ctx, n1:int, operator:float, n2:float):
+    async def _calculate(self, ctx, n1:float, operator:str, n2:float):
         if not operator in ['*', '/', '+', '-']: return await warn(ctx=ctx, content='연산자를 제대로 입력해 주세요')
         result = eval(f'{n1}{operator}{n2}')
         await sendEmbed(ctx=ctx, title='결과', content=f'{n1} {operator} {n2} = {result}')
+    
+    @commands.command(name='일차방정식', aliases=['1차방정식', '1ㅊㅂㅈㅅ', 'linearEquation'], help='일차방정식을 풀어줍니다. ax + b = 0', usage='[a] [b]')
+    @commands.cooldown(1.0, 7, commands.BucketType.user)
+    @can_use()
+    async def _linearEquation(self, ctx, n1:float, n2:float):
+        await sendEmbed(ctx=ctx, title='결과', content=f'해: {-1 * n2 / n1}')
 
 def setup(bot):
     bot.add_cog(Math(bot))
