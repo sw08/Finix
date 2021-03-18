@@ -110,7 +110,8 @@ class Support(commands.Cog, name='지원'):
                 content = data['content']
                 writer = await self.bot.fetch_user(int(data['writer']))
             embeds.append(discord.Embed(title=f'공지 - {1+i}개/{count}개', description=f'{content}\n\n------------------\n[서포트 서버 들어오기](http://support.finix.kro.kr)\n[피닉스 권한없이 초대](http://invite.finix.kro.kr)\n[피닉스 최소권한 초대](http://invite2.finix.kro.kr)\n[피닉스 깃허브](http://github.finix.kro.kr)', color=embedcolor).set_footer(icon_url=writer.avatar_url, text=f'{writer} - {date}'))
-        page = Paginator(bot=self.bot, message=await ctx.send(embed=embeds[0]), embeds=embeds.reverse(), only=ctx.author, use_extend=True, extended_emojis=['<:leftend:809567692692258847>', '<:left:809567681652981781>', '<:right:809567682164424738>', '<:rightend:809567696307617863>'])
+        embeds.reverse()
+        page = Paginator(bot=self.bot, message=await ctx.send(embed=embeds[0]), embeds=embeds, only=ctx.author, use_extend=True, extended_emojis=['<:leftend:809567692692258847>', '<:left:809567681652981781>', '<:right:809567682164424738>', '<:rightend:809567696307617863>'])
         await page.start()
     
     @commands.command(name='초대', aliases=['ㅊㄷ', 'invite', '링크'], help='봇과 서포트 서버, 그리고 이 서버의 초대를 보여줍니다.')
