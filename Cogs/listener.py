@@ -45,6 +45,7 @@ class Listener(commands.Cog):
     
     @commands.Cog.listener()
     async def on_message(self, message):
+        if message.mentions == [self.bot.mention] and len(message.content) == 21: return await sendEmbed(ctx=await self.bot.get_context(message), title='피닉스 접두사', content='피닉스의 접두사는 `ㅍ`, `\'\'`, `"`입니다')
         if message.author.bot or type(message.channel) != discord.DMChannel: return
         category = self.bot.get_channel(812625850565525525)
         channels = [i.name for i in category.channels]
@@ -55,6 +56,7 @@ class Listener(commands.Cog):
             userChannel = await category.create_text_channel(name=str(message.author.id))
         await userChannel.edit(topic=str(message.author))
         await userChannel.send(f'{message.author.mention}: ```{message.content}```')
+        
 
 def setup(bot):
     bot.add_cog(Listener(bot))
