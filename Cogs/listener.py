@@ -21,8 +21,9 @@ class Listener(commands.Cog):
         backup_zip = zipfile.ZipFile('backup.zip', 'w')
         for i in ['data/', 'stocks/', 'rank/', 'posts/', 'level/']:
             for folder, _subfolders, files in os.walk(i):
-                for file in files:
-                    backup_zip.write(os.path.join(folder, file), os.path.relpath(os.path.join(folder,file)), compress_type = zipfile.ZIP_DEFLATED)
+                if isdir(i):
+                    for file in files:
+                        backup_zip.write(os.path.join(folder, file), os.path.relpath(os.path.join(folder,file)), compress_type = zipfile.ZIP_DEFLATED)
         if isfile('banned.bin'): backup_zip.write('banned.bin', compress_type=zipfile.ZIP_DEFLATED)
         backup_zip.close()
         await (self.bot.get_channel(821358881837416468)).send(file=discord.File('backup.zip'), content=datetime.datetime.now())

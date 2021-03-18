@@ -54,6 +54,24 @@ class Math(commands.Cog, name='수학'):
     @can_use()
     async def _linearEquation(self, ctx, n1:float, n2:float):
         await sendEmbed(ctx=ctx, title='결과', content=f'해: {-1 * n2 / n1}')
+    
+    @commands.command(name='조립제법', aliases=['ㅈㄹㅈㅂ', 'assemblyMethod', '조립 제법'], help='조립제법을 계산해줘요! 계수들은 |로 구분해 넣어주세요', usage='[일차방정식의 해] [다차방정식의 계수들]')
+    @commands.cooldown(1.0, 7, commands.BucketType.user)
+    @commands.max_concurrency(5, per=commands.BucketType.default, wait=True)
+    @can_use()
+    async def _assemblyMethod(self, ctx, Hae:float, *, Gyesu):
+        try: Gyesu = [float(i.replace('|', '').replace(' ', '')) for i in Gyesu.split('|')]
+        except ValueError: return await warn(ctx=ctx, content='계수들을 제대로 입력해 주세요')
+        result = []
+        result.append(Gyesu[0])
+        for i in range(len(Gyesu)-1):
+            try: result.append(Gyesu[i+1] + (result[i] * Hae))
+            except IndexError: break
+        content = []
+        for i in range(len(result)-1):
+            content.append(f'**{len(result) - i}**차항의 계수는 `{result[i]}`')
+        content.append(f'**나머지**는 `{result[-1]}`입니다')
+        await sendEmbed(ctx=ctx, title='조립제법 결과', content=', '.join(content) + '입니단')
 
 def setup(bot):
     bot.add_cog(Math(bot))
