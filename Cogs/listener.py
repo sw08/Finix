@@ -1,17 +1,32 @@
 from asyncio import sleep
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 from Tools.func import writedata, getdata, sendEmbed
 from random import randint
 from Tools.var import embedcolor, version, mainprefix
 from os.path import isdir, isfile
-from os import makedirs
+import os.path
+from os import makedirs, remove
 from threading import Thread
-import json, datetime
+import json, datetime, zipfile
 
 class Listener(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self._backup.start()
+    
+    @tasks.loop(hours=24)
+    async def _backup(self):
+        if isfile('backup.zip'): remove('backup.zip')
+        backup_zip = zipfile.ZipFile('backup.zip', 'w')
+        for i in ['data/', 'stocks/', 'rank/', 'posts/', 'level/']:
+            for folder, _subfolders, files in os.walk(i):
+                for file in files:
+                    backup_zip.write(os.path.join(folder, file), os.path.relpath(os.path.join(folder,file), 'data/temp/'), compress_type = zipfile.ZIP_DEFLATED)
+        if isfile('banned.bin'): backup_zip.write('banned.bin', compress_type=zipfile.ZIP_DEFLATED)
+        backup_zip.close()
+        await (self.bot.get_channel(821358881837416468)).send(file=discord.File('backup.zip'), content=datetime.datetime.now())
+        os.remove('backup.zip')
 
     @commands.Cog.listener()
     async def on_command_completion(self, ctx):
@@ -45,7 +60,7 @@ class Listener(commands.Cog):
     
     @commands.Cog.listener()
     async def on_message(self, message):
-        if message.mentions == [self.bot.mention] and len(message.content) == 21: return await sendEmbed(ctx=await self.bot.get_context(message), title='피닉스 접두사', content='피닉스의 접두사는 `ㅍ`, `\'\'`, `"`입니다')
+        if message.mentions == [self.bot.user.mention] and len(message.content) == 21: return await sendEmbed(ctx=await self.bot.get_context(message), title='피닉스 접두사', content='피닉스의 접두사는 `ㅍ`, `\'\'`, `"`입니다')
         if message.author.bot or type(message.channel) != discord.DMChannel: return
         category = self.bot.get_channel(812625850565525525)
         channels = [i.name for i in category.channels]
