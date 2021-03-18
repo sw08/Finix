@@ -19,10 +19,10 @@ async def warn(*, ctx, content):
     await ctx.send(embed=embed)
 
 async def errorlog(*, ctx, error, bot):
-    embed = discord.Embed(title='오류', color=errorcolor)
+    embed = discord.Embed(title='오류', description=f'`{ctx.message.content}`', color=errorcolor)
     embed.add_field(name='오류 발생자', value=f'{ctx.author} ({ctx.author.id})\n{ctx.author.mention}')
     embed.add_field(name='오류 발생지', value=f'{ctx.message.guild.name} ({ctx.message.guild.id})\n{ctx.message.channel.name} ({ctx.message.channel.id})')
-    embed.add_field(name='오류 내용', value=f'```py\n{error}```')   
+    embed.add_field(name='오류 내용', value=f'```py\n{error}```')
     await (bot.get_channel(808619404240748586)).send(embed=embed)
 
 async def log(embed, bot):   
