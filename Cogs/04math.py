@@ -69,7 +69,7 @@ class Math(commands.Cog, name='수학'):
             except IndexError: break
         content = []
         for i in range(len(result)-2):
-            content.append(f'**{len(result) - i - 1}**차항의 계수는 `{result[i]}`')
+            content.append(f'**{len(result) - i - 2}**차항의 계수는 `{result[i]}`')
         content.append(f'**상수항**은 `{result[-2]}`')
         content.append(f'**나머지**는 `{result[-1]}`입니다')
         await sendEmbed(ctx=ctx, title='조립제법 결과', content=', '.join(content) + '입니다')
