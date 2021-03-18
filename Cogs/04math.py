@@ -43,7 +43,10 @@ class Math(commands.Cog, name='수학'):
     @can_use()
     async def _calculate(self, ctx, n1:float, operator:str, n2:float):
         if not operator in ['*', '/', '+', '-']: return await warn(ctx=ctx, content='연산자를 제대로 입력해 주세요')
-        result = eval(f'{n1}{operator}{n2}')
+        try:
+            result = eval(f'{n1}{operator}{n2}')
+        except ZeroDivisionError:
+            return await warn(ctx=ctx, content='0으로는 나눌 수 없습니다.')
         await sendEmbed(ctx=ctx, title='결과', content=f'{n1} {operator} {n2} = {result}')
     
     @commands.command(name='일차방정식', aliases=['1차방정식', '1ㅊㅂㅈㅅ', 'linearEquation'], help='일차방정식을 풀어줍니다. ax + b = 0', usage='[a] [b]')
