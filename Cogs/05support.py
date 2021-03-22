@@ -17,7 +17,7 @@ class Support(commands.Cog, name='지원'):
     def __init__(self, bot):
         self.bot = bot
         
-    @commands.command(name='봇정보', aliases=['botinfo', '봇', 'ㅂㅈㅂ'], help='봇의 관한 정보들을 확인합니다')
+    @commands.command(name='봇정보', aliases=['botinfo', '봇 정보', 'ㅂㅈㅂ'], help='봇의 관한 정보들을 확인합니다')
     @can_use()
     async def _botinfo(self, ctx):
         embed = discord.Embed(title='봇정보', color=embedcolor)
