@@ -67,7 +67,12 @@ class Owner(commands.Cog, name='관리자'):
         embed.add_field(name='**TYPE**', value='```py\n' + str(type(result)).split("'")[1] + '```')    
         await ctx.send(embed=embed)
     
-    @commands.command(name='밴', aliases=['차단', 'ban', 'ㅂ'], help='봇에게서 차단하는 명령어입니다.', usage='[유저] [이유]')
+    @commands.group(name='봇', help='봇 관련 명령어를 실행합니다.', usage='<밴/언밴>', invoke_without_command=True)
+    @commands.is_owner()
+    async def manageBot(self, ctx):
+        await sendEmbed(ctx=ctx, title='봇 명령어', content=f'{mainprefix}봇 <밴/언밴>')
+    
+    @manageBot.command(name='밴', aliases=['차단', 'ban', 'ㅂ'], help='봇에게서 차단하는 명령어입니다.', usage='[유저] [이유]')
     @commands.is_owner()
     async def _ban(self, ctx, user: discord.Member, *, reason):
         if isfile('banned.bin'):
@@ -94,7 +99,7 @@ class Owner(commands.Cog, name='관리자'):
         except: pass
         await log(embed=discord.Embed(title='밴', description=f'{user.mention}님이 {reason}이라는 이유로 피닉스로부터 차단당하셨습니다.\n처리자: {ctx.author.mention}\n{(str(ctx.message.created_at))[:-7]}', color=embedcolor), bot=self.bot)
     
-    @commands.command(name='언밴', aliases=['차단해제', 'unban', 'ㅇㅂ'], help='봇에게서 차단을 해제하는 명령어입니다.', usage='[유저] [이유]')
+    @manageBot.command(name='언밴', aliases=['차단해제', 'unban', 'ㅇㅂ'], help='봇에게서 차단을 해제하는 명령어입니다.', usage='[유저] [이유]')
     @commands.is_owner()
     async def _unban(self, ctx, user: discord.Member, *, reason):
         if isfile('banned.bin'):
@@ -154,10 +159,10 @@ class Owner(commands.Cog, name='관리자'):
     async def _answer(self, ctx, *, answer=None):
         if ctx.channel.category_id != 812625850565525525:
             return await warn(ctx=ctx, content='문의채널이 아닙니다')
-        if answer is not None: return await (await (self.bot.get_user(int(ctx.channel.name))).create_dm()).send(f'{ctx.author.mention}: ```{answer.content}```')
+        if answer is not None: return await (await (self.bot.get_user(int(ctx.channel.name))).create_dm()).send(f'{ctx.author.mention}: ```{answer}```')
         answer = ''
         await sendEmbed(ctx=ctx, title='답변 시작', content='답변 내용을 입력해 주세요')
-        channel = await (self.bot.get_user(int(ctx.channel.name))).create_dm()
+        channel = await (self.bot.get_user(int(ctx.channel.name[3:]))).create_dm()
         while True:
             answer = await self.bot.wait_for('message', check=lambda m: m.channel == ctx.channel and m.author == ctx.author)
             if answer.content in ['문의종료', '종료', '끝', '문의끝', '완료']:
