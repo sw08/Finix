@@ -52,7 +52,7 @@ class Support(commands.Cog, name='지원'):
         else:
             helps = []
             cogs = [i for i in self.bot.cogs]
-            del cogs[cogs.index('Listener')]
+            if 'listener' in cogs or 'Listener' in cogs: del cogs[cogs.index('Listener')]
             for i in range(len(cogs)):
                 cogs[i] = self.bot.get_cog(cogs[i])
             embed = discord.Embed(title=f'1/{len(cogs)+1}페이지 - 카테고리 목록', description='[]는 필수적인 값을, <>는 필수적이지 않은 값들을 의미합니다. 괄호들은 빼고 입력해 주세요!', color=embedcolor)
