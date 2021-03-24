@@ -62,15 +62,16 @@ class Support(commands.Cog, name='지원'):
             helps.append(embed)
             for i in range(len(cogs)):
                 embed = discord.Embed(title=f'{i+2}/{len(cogs)+1} 페이지 - {cogs[i].qualified_name}', description=f'**`{cogs[i].description}`**', color=embedcolor)
-                for i in cogs[i].get_commands():
+                commandList = cogs[i].get_commands()
+                for i in commandList:
                     if i.usage is None:
                         usage = ''
                     else:
                         usage = ' ' + i.usage
                     if i.help is None:
-                        embed.add_field(name=f'\n**{i.name}**', value=f'`{mainprefix}{i.name}{usage}`\n', inline=False)
+                        embed.add_field(name=f'\n**{i.qualified_name}**', value=f'`{mainprefix}{i.qualified_name}{usage}`\n', inline=False)
                     else:
-                        embed.add_field(name=f'\n**{i.name}**', value=f'`{mainprefix}{i.name}{usage}`\n{i.help}\n', inline=False)
+                        embed.add_field(name=f'\n**{i.qualified_name}**', value=f'`{mainprefix}{i.qualified_name}{usage}`\n{i.help}\n', inline=False)
                 helps.append(embed)
             for i in range(len(helps)):
                 helps[i] = helps[i].set_footer(text=f'{ctx.author} | {mainprefix}도움', icon_url=ctx.author.avatar_url)

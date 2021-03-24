@@ -96,13 +96,17 @@ async def on_command_error(ctx, error):
     elif isinstance(error, commands.CheckFailure):
         await warn(ctx=ctx, content='실행하실 조건이 충족되지 않았습니다')
     elif isinstance(error, commands.BadArgument):
-        await warn(ctx=ctx, content='올바른 값을 넣어 주세요.')
+        await warn(ctx=ctx, content='올바른 값을 넣어 주세요')
     elif isinstance(error, commands.MissingRequiredArgument):
-        await warn(ctx=ctx, content='값이 필요합니다.')
+        await warn(ctx=ctx, content='값이 필요합니다')
     elif isinstance(error, commands.MissingPermissions):
-        await warn(ctx=ctx, content='권한이 없습니다.')
+        await warn(ctx=ctx, content='권한이 없습니다')
     elif isinstance(error, commands.CommandNotFound):
         pass
+    elif isinstance(error, commands.DisabledCommand):
+        await warn(ctx=ctx, content='현재 이 명령어는 사용이 불가능합니다')
+    elif isinstance(error, commands.MaxConcurrencyReached):
+        await warn(ctx=ctx, content='너무 많은 명령어가 실행 중이에요')
     elif '403 Forbidden' in str(error):
         await warn(ctx=ctx, content='저런. 봇에게 권한을 제대로 주지 않으셨군요')
     else:
