@@ -64,6 +64,12 @@ class Support(commands.Cog, name='지원'):
                 embed = discord.Embed(title=f'{i+2}/{len(cogs)+1} 페이지 - {cogs[i].qualified_name}', description=f'**`{cogs[i].description}`**', color=embedcolor)
                 commandList = cogs[i].get_commands()
                 for i in commandList:
+                    if type(i) == commands.core.Group:
+                        for j in enumerate(i.commands):
+                            CMD = j[1]
+                            CMD.name = i.name + CMD.name
+                            commandList.insert(commandList.index(i) + j[0], CMD)
+                for i in commandList:
                     if i.usage is None:
                         usage = ''
                     else:
