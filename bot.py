@@ -8,6 +8,9 @@ from os import listdir, chdir
 import asyncio
 from asyncio import sleep
 import koreanbots
+import logging
+import sys
+from datetime import datetime
 
 with open('token.bin', 'rb') as f:
     token = load(f)
@@ -33,6 +36,7 @@ async def presence():
 
 @bot.event
 async def on_ready():
+    global logger
     bot.owner_ids = [745848200195473490, 441202161481809922]
     cogs = listdir("Cogs")
     cogs.sort()
@@ -40,6 +44,10 @@ async def on_ready():
         if filename.endswith(".py"):    
             bot.load_extension(f"Cogs.{filename[:-3]}")
             print(f"Cogs.{filename[:-3]}")
+    logger = logging.getLogger('Finix_Log')
+    logger.setLevel(logging.INFO)
+    stream_handler = logging.StreamHandler()
+    logger.addHandler(stream_handler)
     print('구동 시작')
     await bot.change_presence(status=discord.Status.online, activity=(await presence()))
 
@@ -90,6 +98,15 @@ async def reload_commands(ctx, *, extension='all'):
         await msg.edit(embed=discord.Embed(title='Finished', description=f'Reloading {extension} Finished', color=embedcolor))
 
 @bot.event
+async def on_command(ctx):
+    logger.info(f'{ctx.author} ({ctx.author.id})가 {ctx.message.content} 실행\n{ctx.message.created_at}')
+
+@bot.event
+async def on_error(event, *args, **kwargs):
+    exc = sys.exc_info()
+    logger.error(f'{event}에서 에러 발생: {exc}\n{datetime.now()}')
+
+@bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.errors.CommandOnCooldown):
         await warn(ctx=ctx, content=f"지금 쿨타임에 있어요. `{round(error.retry_after, 2)}`초 후에 다시 시도해 주세요")
@@ -110,6 +127,6 @@ async def on_command_error(ctx, error):
     elif '403 Forbidden' in str(error):
         await warn(ctx=ctx, content='저런. 봇에게 권한을 제대로 주지 않으셨군요')
     else:
-        await errorlog(ctx=ctx, error=error, bot=bot)
+        await errorlog(ctx=ctx, error=error, bot=bot, logger=logger)
 
 bot.run(token)

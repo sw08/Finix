@@ -11,12 +11,9 @@ from threading import Thread
 import json, datetime, zipfile
 
 class Listener(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-        self._backup.start()
     
     @tasks.loop(hours=24)
-    async def _backup(self):
+    async def backup(self):
         if isfile('backup.zip'): remove('backup.zip')
         backup_zip = zipfile.ZipFile('backup.zip', 'w')
         for i in ['data/', 'stocks/', 'rank/', 'posts/', 'level/']:
@@ -28,6 +25,10 @@ class Listener(commands.Cog):
         backup_zip.close()
         await (self.bot.get_channel(821358881837416468)).send(file=discord.File('backup.zip'), content=datetime.datetime.now())
         os.remove('backup.zip')
+
+    def __init__(self, bot):
+        self.bot = bot
+        self.backup.start()
 
     @commands.Cog.listener()
     async def on_command_completion(self, ctx):

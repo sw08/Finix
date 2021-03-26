@@ -146,10 +146,11 @@ class Money(commands.Cog, name='경제'):
     @commands.cooldown(1.0, 7, commands.BucketType.user)
     async def _sendmoney(self, ctx, user:discord.Member, amount:int):
         if amount < 50:
-            await warn(ctx=ctx, content='50뭔 이상부터 송금할 수 있습니다')
-            return
-        if user.bot:
-            return await warn(ctx=ctx, content='봇에게는 송금할 수 없습니다')
+            return await warn(ctx=ctx, content='50뭔 이상부터 송금할 수 있습니다')
+        if user.bot or user.id == ctx.author.id:
+            return await warn(ctx=ctx, content='송금할 수 없는 유저입니다')
+        if amount > int(getdata(id=ctx.author.id, item='point')):
+            return await warn(ctx=ctx, content='돈이 부족합니다')
         writedata(id=ctx.author.id, item='point', value=str(int(getdata(id=ctx.author.id, item='point'))-amount))
         writedata(id=user.id, item='point', value=str(int(getdata(id=user.id, item='point'))+round(amount*0.95)))
         await sendEmbed(ctx=ctx, title='💵 송금 💵', content=f'`{user}`님께 💵 `{round(amount*0.95)}`만큼 송금되었습니다.\n수수료: 💵 `{amount-round(amount*0.95)}`')
