@@ -171,6 +171,14 @@ class Owner(commands.Cog, name='관리자'):
             await channel.send(f'{ctx.author.mention}: ```{answer.content}```')
             await answer.add_reaction('<a:CheckGIF2:808647121061675049>')
     
+    @manageBot.command(name='명령어상태', aliases=['command_enabled', 'ㅁㄹㅇㅅㅌ', '명령어활성화'], help='명령어의 활성화 상태를 변경합니다', usage='[on/off] [명령어이름]')
+    @commands.is_owner()
+    async def _commandState(self, ctx, state, *, name):
+        command = self.bot.get_command(name)
+        if command is None: return await warn(ctx=ctx, content='명령어를 찾을 수 없습니다')
+        command.enabled = ([True, False])[(['on', 'off']).index(state.upper())]
+        await sendEmbed(ctx=ctx, title='명령어 상태변경', content=f'`{name}` 명령어의 상태가 `{state}`로 설정되었습니다')
+    
     @commands.command(name='깃풀', aliases=['git pull', '깃허브 풀', 'ㄱㅍ'])
     @commands.is_owner()
     async def _git(self, ctx):

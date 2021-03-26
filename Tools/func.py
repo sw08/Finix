@@ -20,13 +20,12 @@ async def warn(*, ctx, content):
     embed.set_footer(text=f'{ctx.author} | {mainprefix}도움', icon_url=ctx.author.avatar_url)
     await ctx.send(embed=embed)
 
-async def errorlog(*, ctx, error, bot, logger):
+async def errorlog(*, ctx, error, bot):
     embed = discord.Embed(title='오류', description=f'`{ctx.message.content}`', color=errorcolor)
     embed.add_field(name='오류 발생자', value=f'{ctx.author} ({ctx.author.id})\n{ctx.author.mention}')
     embed.add_field(name='오류 발생지', value=f'{ctx.message.guild.name} ({ctx.message.guild.id})\n{ctx.message.channel.name} ({ctx.message.channel.id})')
     embed.add_field(name='오류 내용', value=f'```py\n{error}```')
     await (bot.get_channel(808619404240748586)).send(embed=embed)
-    logger.error('에러: {ctx.author.id} ({ctx.author})\n\n{error}\n\n{datetime.now()}')
 
 async def log(embed, bot):   
     await (bot.get_channel(808619404240748586)).send(embed=embed)

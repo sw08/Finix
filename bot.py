@@ -127,6 +127,7 @@ async def on_command_error(ctx, error):
     elif '403 Forbidden' in str(error):
         await warn(ctx=ctx, content='저런. 봇에게 권한을 제대로 주지 않으셨군요')
     else:
-        await errorlog(ctx=ctx, error=error, bot=bot, logger=logger)
+        await errorlog(ctx=ctx, error=error, bot=bot)
+    logger.error('에러: {ctx.author.id} ({ctx.author})\n\n{error}\n\n{datetime.now()}')
 
 bot.run(token)
