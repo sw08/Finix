@@ -1,7 +1,7 @@
-prefix = ['ㅍ', '"', "''"]
-mainprefix = "ㅍ"
+prefix = ['"', "''"]
+mainprefix = "''"
 
-embedcolor = 0xff0000
-errorcolor = 0xffff00
+embedcolor = 0x0000ff
+errorcolor = 0xff0000
 
-version = '1.6.5'
+version = '20210327'

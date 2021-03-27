@@ -23,13 +23,13 @@ with open('koreanbotsToken.bin', 'rb') as f:
 
 Bots = koreanbots.Client(bot, koreanbotsToken)
 
-if 'Finix' in listdir():
-    chdir('Finix')
+if 'thinkingbot' in listdir():
+    chdir('thinkingbot')
 
 async def presence():
     await bot.wait_until_ready()
     while not bot.is_closed():
-        messages = [f'{len(bot.guilds)}서버 {len(bot.users)}유저', f'{mainprefix}도움', f'피닉스 {version}', 'DM으로 문의하세요']
+        messages = [f'{len(bot.guilds)}서버 {len(bot.users)}유저', f'{mainprefix}도움', f'ThinkingBot {version}', 'DM으로 문의하세요']
         for i in messages:
             await bot.change_presence(status=discord.Status.online, activity=discord.Game(i))
             await sleep(10)
@@ -44,7 +44,7 @@ async def on_ready():
         if filename.endswith(".py"):    
             bot.load_extension(f"Cogs.{filename[:-3]}")
             print(f"Cogs.{filename[:-3]}")
-    logger = logging.getLogger('Finix_Log')
+    logger = logging.getLogger('thinkingbot_Log')
     logger.setLevel(logging.INFO)
     stream_handler = logging.StreamHandler()
     logger.addHandler(stream_handler)

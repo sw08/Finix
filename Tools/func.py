@@ -25,10 +25,10 @@ async def errorlog(*, ctx, error, bot):
     embed.add_field(name='오류 발생자', value=f'{ctx.author} ({ctx.author.id})\n{ctx.author.mention}')
     embed.add_field(name='오류 발생지', value=f'{ctx.message.guild.name} ({ctx.message.guild.id})\n{ctx.message.channel.name} ({ctx.message.channel.id})')
     embed.add_field(name='오류 내용', value=f'```py\n{error}```')
-    await (bot.get_channel(808619404240748586)).send(embed=embed)
+    await (bot.get_channel(825221941090189372)).send(embed=embed)
 
 async def log(embed, bot):   
-    await (bot.get_channel(808619404240748586)).send(embed=embed)
+    await (bot.get_channel(825221941090189372)).send(embed=embed)
 
 def getnow(format):
     utcnow = datetime.utcnow()

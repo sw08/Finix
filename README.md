@@ -1,4 +1,4 @@
-# Finix 봇 깃허브
+# thinkingbot 깃허브
 
 크레딧: Team Orora, sw08
 
@@ -9,4 +9,4 @@
 
 ## 출처 표기 방법
 `개발자: [sw08](https://github.com/sw08)`  
-`원본: [피닉스 봇](http://github.finix.kro.kr)`
+`원본: [ThinkingBot 봇](http://github.thinkingbot.kro.kr)`

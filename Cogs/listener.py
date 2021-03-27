@@ -62,7 +62,7 @@ class Listener(commands.Cog):
     
     @commands.Cog.listener()
     async def on_message(self, message):
-        if message.mentions == [self.bot.user.mention] and len(message.content) == 21: return await sendEmbed(ctx=await self.bot.get_context(message), title='피닉스 접두사', content='피닉스의 접두사는 `ㅍ`, `\'\'`, `"`입니다')
+        if message.mentions == [self.bot.user.mention] and len(message.content) == 21: return await sendEmbed(ctx=await self.bot.get_context(message), title='ThinkingBot 접두사', content='ThinkingBot의 접두사는 `ㅍ`, `\'\'`, `"`입니다')
         if message.author.bot or type(message.channel) != discord.DMChannel: return
         category = self.bot.get_channel(812625850565525525)
         channels = [i.name for i in category.channels]

@@ -91,13 +91,13 @@ class Owner(commands.Cog, name='관리자'):
         await sendEmbed(ctx=ctx, title='밴', content=f'{user.mention}님이 {reason} 사유로 차단당하셨습니다.\n이의는 관리자 DM으로 제출해 주십시오.')
         try:
             user = await user.create_dm()
-            await user.send(embed=discord.Embed(title='밴', description=f'당신은 {reason}이라는 이유로 피닉스로부터 차단당하셨습니다.\n이의는 관리자 DM으로 제출해 주십시오', color=embedcolor))
+            await user.send(embed=discord.Embed(title='밴', description=f'당신은 {reason}이라는 이유로 ThinkingBot로부터 차단당하셨습니다.\n이의는 관리자 DM으로 제출해 주십시오', color=embedcolor))
         except:
             pass
-        await (self.bot.get_channel(807035238475628574)).send(f'{user.mention}님 - 밴\n사유: ```{reason}```')
+        await (self.bot.get_channel(825221941090189372)).send(f'{user.mention}님 - 밴\n사유: ```{reason}```')
         try: await (self.bot.get_guild(807033213003759626)).ban(user, reason=reason)
         except: pass
-        await log(embed=discord.Embed(title='밴', description=f'{user.mention}님이 {reason}이라는 이유로 피닉스로부터 차단당하셨습니다.\n처리자: {ctx.author.mention}\n{(str(ctx.message.created_at))[:-7]}', color=embedcolor), bot=self.bot)
+        await log(embed=discord.Embed(title='밴', description=f'{user.mention}님이 {reason}이라는 이유로 ThinkingBot로부터 차단당하셨습니다.\n처리자: {ctx.author.mention}\n{(str(ctx.message.created_at))[:-7]}', color=embedcolor), bot=self.bot)
     
     @manageBot.command(name='언밴', aliases=['차단해제', 'unban', 'ㅇㅂ'], help='봇에게서 차단을 해제하는 명령어입니다.', usage='[유저] [이유]')
     @commands.is_owner()
@@ -118,12 +118,12 @@ class Owner(commands.Cog, name='관리자'):
         await sendEmbed(ctx=ctx, title='밴', content=f'{user.mention}님은 {reason} 사유로 차단해제 되셨습니다.')
         try:
             user = await user.create_dm()
-            await user.send(embed=discord.Embed(title='밴', description=f'당신은 {reason}이라는 이유로 피닉스로부터 차단해제 되셨습니다.', color=embedcolor))
+            await user.send(embed=discord.Embed(title='밴', description=f'당신은 {reason}이라는 이유로 ThinkingBot로부터 차단해제 되셨습니다.', color=embedcolor))
         except:
             pass
         try: await (self.bot.get_guild(807033213003759626)).unban(user, reason=reason)
         except: pass
-        await log(embed=discord.Embed(title='밴', description=f'{user.mention}님이 {reason}이라는 이유로 피닉스로부터 차단해제 되셨습니다.\n처리자: {ctx.author.mention}\n{(str(ctx.message.created_at))[:-7]}', color=embedcolor), bot=self.bot)
+        await log(embed=discord.Embed(title='밴', description=f'{user.mention}님이 {reason}이라는 이유로 ThinkingBot로부터 차단해제 되셨습니다.\n처리자: {ctx.author.mention}\n{(str(ctx.message.created_at))[:-7]}', color=embedcolor), bot=self.bot)
     
     @commands.command(name='공지보내기', aliases=['공지발행', 'post', 'ㅂㅎ'], help='공지를 발행합니다.', usage='[공지 내용]')
     @commands.is_owner()

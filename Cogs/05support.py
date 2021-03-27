@@ -28,7 +28,7 @@ class Support(commands.Cog, name='지원'):
         embed.add_field(name='버전', value=version, inline=False)
         embed.add_field(name='개발 언어 및 라이브러리', value='파이썬, discord.py', inline=False)
         embed.add_field(name='크레딧', value='심심러, Team Orora, huntingbear21, 3.141592 등 많은 분들', inline=False)
-        embed.add_field(name='링크', value=f'[Koreanbots](http://koreanbots.finix.kro.kr)\n[서포트 서버 초대](http://support.finix.kro.kr)\n[피닉스 권한없이 초대](http://invite.finix.kro.kr)\n[피닉스 최소권한 초대](http://invite2.finix.kro.kr)\n[피닉스 깃허브](http://github.finix.kro.kr)')
+        embed.add_field(name='링크', value=f'[서포트 서버 초대](http://support.thinkingbot.kro.kr)\n[ThinkingBot 권한없이 초대](http://invite.thinkingbot.kro.kr)\n[ThinkingBot 최소권한 초대](http://invite2.thinkingbot.kro.kr)\n[ThinkingBot 깃허브](http://github.thinkingbot.kro.kr)')
         embed.set_footer(text=f'{ctx.author} | {mainprefix}도움', icon_url=ctx.author.avatar_url)
         embed.set_thumbnail(url=self.bot.user.avatar_url)
         await ctx.send(embed=embed)
@@ -70,6 +70,7 @@ class Support(commands.Cog, name='지원'):
                             CMD.name = i.name + CMD.name
                             commandList.insert(commandList.index(i) + j[0], CMD)
                 for i in commandList:
+                    if i.enabled == False: continue
                     if i.usage is None:
                         usage = ''
                     else:
@@ -116,7 +117,7 @@ class Support(commands.Cog, name='지원'):
                 date = data['date']
                 content = data['content']
                 writer = await self.bot.fetch_user(int(data['writer']))
-            embeds.append(discord.Embed(title=f'공지 - {1+i}개/{count}개', description=f'{content}\n\n------------------\n[서포트 서버 들어오기](http://support.finix.kro.kr)\n[피닉스 권한없이 초대](http://invite.finix.kro.kr)\n[피닉스 최소권한 초대](http://invite2.finix.kro.kr)\n[피닉스 깃허브](http://github.finix.kro.kr)', color=embedcolor).set_footer(icon_url=writer.avatar_url, text=f'{writer} - {date}'))
+            embeds.append(discord.Embed(title=f'공지 - {1+i}개/{count}개', description=f'{content}\n\n------------------\n[서포트 서버 들어오기](http://support.thinkingbot.kro.kr)\n[ThinkingBot 권한없이 초대](http://invite.thinkingbot.kro.kr)\n[ThinkingBot 최소권한 초대](http://invite2.thinkingbot.kro.kr)\n[ThinkingBot 깃허브](http://github.thinkingbot.kro.kr)', color=embedcolor).set_footer(icon_url=writer.avatar_url, text=f'{writer} - {date}'))
         embeds.reverse()
         page = Paginator(bot=self.bot, message=await ctx.send(embed=embeds[0]), embeds=embeds, only=ctx.author, use_extend=True, extended_emojis=['<:leftend:809567692692258847>', '<:left:809567681652981781>', '<:right:809567682164424738>', '<:rightend:809567696307617863>'])
         await page.start()
@@ -128,7 +129,7 @@ class Support(commands.Cog, name='지원'):
             invite = '[현재 서버 초대](' + (await ctx.guild.channels[0].create_invite()).url + ')'
         except:
             invite = ''
-        await sendEmbed(ctx=ctx, title='초대', content=f'[Koreanbots](http://koreanbots.finix.kro.kr)\n[서포트 서버 초대](http://support.finix.kro.kr)\n[피닉스 권한없이 초대](http://invite.finix.kro.kr)\n[피닉스 최소권한 초대](http://invite.finix.kro.kr)\n{invite}')
+        await sendEmbed(ctx=ctx, title='초대', content=f'[서포트 서버 초대](http://support.thinkingbot.kro.kr)\n[ThinkingBot 권한없이 초대](http://invite.thinkingbot.kro.kr)\n[ThinkingBot 최소권한 초대](http://invite.thinkingbot.kro.kr)\n{invite}')
 
 def setup(bot):
     bot.add_cog(Support(bot))
