@@ -25,7 +25,7 @@ class Support(commands.Cog, name='지원'):
         embed.add_field(name='현재 연결상태', value=f'{round(self.bot.latency*1000)}ms', inline=False)
         embed.add_field(name='서버/유저 수', value=f'{len(self.bot.guilds)}서버, 이용자 {len(self.bot.users)}명')
         embed.add_field(name='개발자', value=f'{await self.bot.fetch_user(745848200195473490)}, id 745848200195473490', inline=False)
-        embed.add_field(name='버전', value=version, inline=False)
+        embed.add_field(name='버전', value=version + ' 릴리즈', inline=False)
         embed.add_field(name='개발 언어 및 라이브러리', value='파이썬, discord.py', inline=False)
         embed.add_field(name='크레딧', value='심심러, Team Orora, huntingbear21, 3.141592 등 많은 분들', inline=False)
         embed.add_field(name='링크', value=f'[서포트 서버 초대](http://support.thinkingbot.kro.kr)\n[ThinkingBot 권한없이 초대](http://invite.thinkingbot.kro.kr)\n[ThinkingBot 최소권한 초대](http://invite2.thinkingbot.kro.kr)\n[ThinkingBot 깃허브](http://github.thinkingbot.kro.kr)')

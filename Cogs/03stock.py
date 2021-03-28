@@ -5,7 +5,7 @@ from random import randint
 from datetime import datetime, timedelta
 from Tools.func import can_use, sendEmbed, getdata, writedata, warn
 from os.path import isfile, isdir
-from os import makedirs
+from os import makedirs, listdir
 
 class Stock(commands.Cog, name='주식'):
     '''
@@ -74,6 +74,20 @@ class Stock(commands.Cog, name='주식'):
             prices[i]['price'] += prices[i]['change']
         with open('stocks/stocks.bin', 'wb') as f:
             dump(prices, f)
+    
+    @tasks.loop(hours=24*7)
+    async def give_stock_profit(self):
+        for i in listdir('stocks/users'):
+            user_id = int(i.replace('.bin', ''))
+            with open(i, 'rb') as f:
+                data = load(f)
+            with open('stocks/stocks.bin', 'rb') as f:
+                stock_price = load(f)
+            for i in data:
+                count = 0
+                for j in data[i]:
+                    count += j['count']
+                writedata(id=user_id, item='point', value=str(int(getdata(id=user_id, item='point')) + round(stock_price[i]['price'] * 0.01 * count)))
 
     def addzero(self, n):
         if len(str(n)) == 1:

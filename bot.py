@@ -99,12 +99,12 @@ async def reload_commands(ctx, *, extension='all'):
 
 @bot.event
 async def on_command(ctx):
-    logger.info(f'{ctx.author} ({ctx.author.id})가 {ctx.message.content} 실행\n{ctx.message.created_at}')
+    logger.info(f'{ctx.author} ({ctx.author.id})가 {ctx.message.content} 실행\n{ctx.message.created_at}\n')
 
 @bot.event
 async def on_error(event, *args, **kwargs):
     exc = sys.exc_info()
-    logger.error(f'{event}에서 에러 발생: {exc}\n{datetime.now()}')
+    logger.error(f'{event}에서 에러 발생: {exc}\n{datetime.now()}\n')
 
 @bot.event
 async def on_command_error(ctx, error):
@@ -128,6 +128,6 @@ async def on_command_error(ctx, error):
         await warn(ctx=ctx, content='저런. 봇에게 권한을 제대로 주지 않으셨군요')
     else:
         await errorlog(ctx=ctx, error=error, bot=bot)
-    logger.error('에러: {ctx.author.id} ({ctx.author})\n\n{error}\n\n{datetime.now()}')
+    logger.error(f'에러: {ctx.author.id} ({ctx.author})\n\n{error}\n\n{datetime.now()}\n')
 
 bot.run(token)
