@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 from Tools.var import embedcolor, mainprefix, prefix, version
-from Tools.func import can_use, sendEmbed, warn
+from Tools.func import can_use, sendEmbed, warn, getmail
 from datetime import datetime
 from os import makedirs
 from os.path import isfile, isdir
@@ -52,9 +52,10 @@ class Support(commands.Cog, name='지원'):
         else:
             helps = []
             cogs = [i for i in self.bot.cogs]
-            if 'listener' in cogs or 'Listener' in cogs: del cogs[cogs.index('Listener')]
             for i in range(len(cogs)):
                 cogs[i] = self.bot.get_cog(cogs[i])
+            for i in cogs:
+                if i.commands is None: del cogs[cogs.index(i)]
             embed = discord.Embed(title=f'1/{len(cogs)+1}페이지 - 카테고리 목록', description='[]는 필수적인 값을, <>는 필수적이지 않은 값들을 의미합니다. 괄호들은 빼고 입력해 주세요!', color=embedcolor)
             embed.add_field(name='접두사', value=f'{self.bot.user.name}의 접두사는 `{"`, `".join(prefix)}`입니다')
             for i in cogs:
@@ -63,14 +64,14 @@ class Support(commands.Cog, name='지원'):
             for i in range(len(cogs)):
                 embed = discord.Embed(title=f'{i+2}/{len(cogs)+1} 페이지 - {cogs[i].qualified_name}', description=f'**`{cogs[i].description}`**', color=embedcolor)
                 commandList = cogs[i].get_commands()
-                
+                '''
                 for i in commandList:
                     if type(i) == commands.core.Group:
                         for j in i.commands:
                             CMD = j
                             CMD.name = i.name + CMD.name
                             commandList.append(CMD)
-                        del commandList[commandList.index(i)]
+                        del commandList[commandList.index(i)]'''
 
                 for i in commandList:
                     if i.enabled == False: pass
@@ -78,12 +79,10 @@ class Support(commands.Cog, name='지원'):
                         usage = ''
                     else:
                         usage = ' ' + i.usage
-                    if i.parent is not None: name = i.full_parent_name + ' ' + i.name.replace(i.full_parent_name, '')
-                    else: name = i.name
                     if i.help is None:
-                        embed.add_field(name=f'\n**{name}**', value=f'`{mainprefix}{name}{usage}`\n', inline=False)
+                        embed.add_field(name=f'\n**{i.name}**', value=f'`{mainprefix}{i.name}{usage}`\n', inline=False)
                     else:
-                        embed.add_field(name=f'\n**{name}**', value=f'`{mainprefix}{name}{usage}`\n{i.help}\n', inline=False)
+                        embed.add_field(name=f'\n**{i.name}**', value=f'`{i.mainprefix}{i.name}{usage}`\n{i.help}\n', inline=False)
                 helps.append(embed)
             for i in range(len(helps)):
                 helps[i] = helps[i].set_footer(text=f'{ctx.author} | {mainprefix}도움', icon_url=ctx.author.avatar_url)
@@ -135,12 +134,23 @@ class Support(commands.Cog, name='지원'):
         except:
             invite = ''
         await sendEmbed(ctx=ctx, title='초대', content=f'[서포트 서버 초대](http://support.thinkingbot.kro.kr)\n[ThinkingBot 권한없이 초대](http://invite.thinkingbot.kro.kr)\n[ThinkingBot 최소권한 초대](http://invite.thinkingbot.kro.kr)\n{invite}')
-    '''
+    
     @commands.command(name='메일함', aliases=['메일', 'mails', 'ㅁㅇ'], help='자신에게 온 메일들을 봅니다')
     @can_use()
     @commands.cooldown(1.0, 5, commands.BucketType.user)
     async def _mails(self, ctx):
-        '''
+        mails = getmail(id=ctx.author.id)
+        mails.reverse() 
+        main_embed = discord.Embed(title='메일함', color=embedcolor)
+        for i in mails:
+            if len(i['title']) > 20: title = i['title'][:20]
+            else: title = i['title']
+            main_embed.add_field(name=title, value='`' + i['time'].strftime("%y.%m.%d %H:%M") + '`')
+        embeds = [main_embed]
+        for i in mails:
+            embeds.append(discord.Embed(title=i['title'], description=i['content'], color=embedcolor).set_footer(text=i['time'].strftime("%y.%m.%d %H:%M")))
+        page = Paginator(bot=self.bot, message=await ctx.send(embed=embeds[0]), embeds=embeds, only=ctx.author, auto_delete=True)
+        await page.start()
 
 def setup(bot):
     bot.add_cog(Support(bot))

@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from os.path import isfile, isdir
 from os import makedirs
 from datetime import datetime
-from pickle import load
+from pickle import load, dump
 import logging
 import json
 from datetime import datetime
@@ -35,6 +35,38 @@ def getnow(format):
     time_gap = timedelta(hours=9)
     kor_time = utcnow+ time_gap
     return str(kor_time.strftime(format))
+
+def getmail(id):
+    if not isdir('mail'): makedirs('mail')
+    if not isfile(f'mail/{id}.bin'): return []
+    with open(f'mail/{id}.bin', 'rb') as f:
+        return load(f)
+
+def writemail(id, title, content):
+    if not isdir('mail'): makedirs('mail')
+    if not isfile(f'mail/{id}.bin'):
+        mails = []
+    else:
+        with open(f'{id}.bin', 'rb') as f:
+            mails = load(f)
+    mails.append(
+        {
+        'title': title,
+        'content': content,
+        'time': datetime.now()
+        }
+        )
+    with open(f'mail/{id}.bin', 'wb') as f:
+        dump(mails, f)
+
+'''
+mails = [dict, dict, dict, ...]
+dict = {
+    "title": 제목,
+    'content': 내용,
+    'time': datetime.datetime.now()
+}
+'''
 
 def getdata(id, item):
     if not isdir('data'):
