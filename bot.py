@@ -28,8 +28,13 @@ if 'thinkingbot' in listdir():
     
 logger = logging.getLogger('thinkingbot_Log')
 logger.setLevel(logging.INFO)
+
 stream_handler = logging.StreamHandler()
 logger.addHandler(stream_handler)
+
+file_handler = logging.FileHandler(filename="run.log", mode='a')
+file_handler.setLevel(logging.ERROR)
+logger.addHandler(file_handler)
 
 async def presence():
     await bot.wait_until_ready()
@@ -133,5 +138,6 @@ async def on_command_error(ctx, error):
     else:
         await errorlog(ctx=ctx, error=error, bot=bot)
     logger.error(f'에러: {ctx.author.id} ({ctx.author})\n\n{error}\n\n{datetime.now()}\n')
+    print('dd')
 
 bot.run(token)

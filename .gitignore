@@ -18,3 +18,5 @@ stocks/
 backup.zip
 *.zip
 .zip
+*.log
+.log

@@ -32,12 +32,12 @@ class Support(commands.Cog, name='지원'):
         embed.set_footer(text=f'{ctx.author} | {mainprefix}도움', icon_url=ctx.author.avatar_url)
         embed.set_thumbnail(url=self.bot.user.avatar_url)
         await ctx.send(embed=embed)
-    
+
     @commands.command(name='도움', aliases=['도움말', 'help', 'ㄷㅇ'], usage='<명령어>', help='명령어들의 도움말을 보여줍니다')
     @can_use()
     async def _help(self, ctx, *, arg=None):
         command = self.bot.get_command(str(arg))
-        if command is not None:
+        if (command is not None) or str(type(command)) == 'discord.ext.commands.core.Group':
             embed = discord.Embed(title='도움말', description=f'```{command.help}```', color=embedcolor)
             if command.usage is None: usage = ''
             else: usage = command.usage
@@ -63,22 +63,27 @@ class Support(commands.Cog, name='지원'):
             for i in range(len(cogs)):
                 embed = discord.Embed(title=f'{i+2}/{len(cogs)+1} 페이지 - {cogs[i].qualified_name}', description=f'**`{cogs[i].description}`**', color=embedcolor)
                 commandList = cogs[i].get_commands()
+                
                 for i in commandList:
                     if type(i) == commands.core.Group:
-                        for j in enumerate(i.commands):
-                            CMD = j[1]
+                        for j in i.commands:
+                            CMD = j
                             CMD.name = i.name + CMD.name
-                            commandList.insert(commandList.index(i) + j[0], CMD)
+                            commandList.append(CMD)
+                        del commandList[commandList.index(i)]
+
                 for i in commandList:
-                    if i.enabled == False: continue
+                    if i.enabled == False: pass
                     if i.usage is None:
                         usage = ''
                     else:
                         usage = ' ' + i.usage
+                    if i.parent is not None: name = i.full_parent_name + ' ' + i.name.replace(i.full_parent_name, '')
+                    else: name = i.name
                     if i.help is None:
-                        embed.add_field(name=f'\n**{i.qualified_name}**', value=f'`{mainprefix}{i.qualified_name}{usage}`\n', inline=False)
+                        embed.add_field(name=f'\n**{name}**', value=f'`{mainprefix}{name}{usage}`\n', inline=False)
                     else:
-                        embed.add_field(name=f'\n**{i.qualified_name}**', value=f'`{mainprefix}{i.qualified_name}{usage}`\n{i.help}\n', inline=False)
+                        embed.add_field(name=f'\n**{name}**', value=f'`{mainprefix}{name}{usage}`\n{i.help}\n', inline=False)
                 helps.append(embed)
             for i in range(len(helps)):
                 helps[i] = helps[i].set_footer(text=f'{ctx.author} | {mainprefix}도움', icon_url=ctx.author.avatar_url)

@@ -74,7 +74,7 @@ class Stock(commands.Cog, name='주식'):
         with open('stocks/stocks.bin', 'wb') as f:
             dump(prices, f)
     
-    @tasks.loop(hours=168)
+    @tasks.loop(seconds=60*60*24*7)
     async def give_stock_profit(self):
         for i in listdir('stocks/users'):
             user_id = int(i.replace('.bin', ''))
@@ -87,7 +87,7 @@ class Stock(commands.Cog, name='주식'):
                 for j in data[i]:
                     count += j['count']
                 writedata(id=user_id, item='point', value=str(int(getdata(id=user_id, item='point')) + round(stock_price[i]['price'] * 0.01 * count)))
-        await log(embed=discord.Embed(title='정상적으로 배당금 부여', description=str(datetime.now()), color=embedcolor))
+        await log(embed=discord.Embed(title='정상적으로 배당금 부여', description=str(datetime.now()), color=embedcolor), bot=self.bot)
         
     def addzero(self, n):
         if len(str(n)) == 1:
