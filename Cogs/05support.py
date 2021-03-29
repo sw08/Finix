@@ -130,6 +130,12 @@ class Support(commands.Cog, name='지원'):
         except:
             invite = ''
         await sendEmbed(ctx=ctx, title='초대', content=f'[서포트 서버 초대](http://support.thinkingbot.kro.kr)\n[ThinkingBot 권한없이 초대](http://invite.thinkingbot.kro.kr)\n[ThinkingBot 최소권한 초대](http://invite.thinkingbot.kro.kr)\n{invite}')
+    '''
+    @commands.command(name='메일함', aliases=['메일', 'mails', 'ㅁㅇ'], help='자신에게 온 메일들을 봅니다')
+    @can_use()
+    @commands.cooldown(1.0, 5, commands.BucketType.user)
+    async def _mails(self, ctx):
+        '''
 
 def setup(bot):
     bot.add_cog(Support(bot))

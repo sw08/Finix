@@ -3,9 +3,10 @@ from discord.ext import commands, tasks
 from pickle import load, dump
 from random import randint
 from datetime import datetime, timedelta
-from Tools.func import can_use, sendEmbed, getdata, writedata, warn
+from Tools.func import can_use, sendEmbed, getdata, writedata, warn, log
 from os.path import isfile, isdir
 from os import makedirs, listdir
+from Tools.var import embedcolor
 
 class Stock(commands.Cog, name='주식'):
     '''
@@ -16,6 +17,7 @@ class Stock(commands.Cog, name='주식'):
         self.bot = bot
         self.time = datetime.utcnow()
         self.change_price.start()
+        self.give_stock_profit.start()
     
     @commands.Cog.listener()
     async def on_ready(self):
@@ -67,15 +69,12 @@ class Stock(commands.Cog, name='주식'):
         with open('stocks/stocks.bin', 'rb') as f:
             prices = load(f)
         for i in prices:
-            if prices[i]['price'] > 1000:
-                prices[i]['change'] = randint(-75, 75)
-            else:
-                prices[i]['change'] = randint(0, 150)
+            prices[i]['change'] = randint(-75, 75)
             prices[i]['price'] += prices[i]['change']
         with open('stocks/stocks.bin', 'wb') as f:
             dump(prices, f)
     
-    @tasks.loop(hours=24*7)
+    @tasks.loop(hours=168)
     async def give_stock_profit(self):
         for i in listdir('stocks/users'):
             user_id = int(i.replace('.bin', ''))
@@ -88,7 +87,8 @@ class Stock(commands.Cog, name='주식'):
                 for j in data[i]:
                     count += j['count']
                 writedata(id=user_id, item='point', value=str(int(getdata(id=user_id, item='point')) + round(stock_price[i]['price'] * 0.01 * count)))
-
+        await log(embed=discord.Embed(title='정상적으로 배당금 부여', description=str(datetime.now()), color=embedcolor))
+        
     def addzero(self, n):
         if len(str(n)) == 1:
             return '0' + str(n)

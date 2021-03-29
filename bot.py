@@ -25,6 +25,11 @@ Bots = koreanbots.Client(bot, koreanbotsToken)'''
 
 if 'thinkingbot' in listdir():
     chdir('thinkingbot')
+    
+logger = logging.getLogger('thinkingbot_Log')
+logger.setLevel(logging.INFO)
+stream_handler = logging.StreamHandler()
+logger.addHandler(stream_handler)
 
 async def presence():
     await bot.wait_until_ready()
@@ -44,10 +49,6 @@ async def on_ready():
         if filename.endswith(".py"):    
             bot.load_extension(f"Cogs.{filename[:-3]}")
             print(f"Cogs.{filename[:-3]}")
-    logger = logging.getLogger('thinkingbot_Log')
-    logger.setLevel(logging.INFO)
-    stream_handler = logging.StreamHandler()
-    logger.addHandler(stream_handler)
     print('구동 시작')
     await bot.change_presence(status=discord.Status.online, activity=(await presence()))
 
@@ -99,15 +100,18 @@ async def reload_commands(ctx, *, extension='all'):
 
 @bot.event
 async def on_command(ctx):
+    global logger
     logger.info(f'{ctx.author} ({ctx.author.id})가 {ctx.message.content} 실행\n{ctx.message.created_at}\n')
 
 @bot.event
 async def on_error(event, *args, **kwargs):
+    global logger
     exc = sys.exc_info()
     logger.error(f'{event}에서 에러 발생: {exc}\n{datetime.now()}\n')
 
 @bot.event
 async def on_command_error(ctx, error):
+    global logger
     if isinstance(error, commands.errors.CommandOnCooldown):
         await warn(ctx=ctx, content=f"지금 쿨타임에 있어요. `{round(error.retry_after, 2)}`초 후에 다시 시도해 주세요")
     elif isinstance(error, commands.CheckFailure):
