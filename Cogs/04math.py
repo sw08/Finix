@@ -81,6 +81,42 @@ class Math(commands.Cog, name='수학'):
     @commands.cooldown(1.0, 5, commands.BucketType.user)
     async def _fraction(self, ctx):
         await sendEmbed(ctx=ctx, title='분수 관련 명령어들', content=f'`{mainprefix}분수계산 <통분/약분/곱셈/나눗셈/덧셈/뺄셈>`')
+    
+    async def eratosthenes(self, n):
+        sieve = [True] * n
+        for i in range(2, n):
+            if sieve[i] == True:
+                for j in range(i+i, n, i):
+                    sieve[j] = False                
+        return [i for i in range(2,n) if sieve[i] == True]
+    
+    async def primeFactor(self, n):
+        l = await self.eratosthenes(n+1)
+        i = 0
+        result = []
+        while i < len(l): 
+            for k in l:
+                if n % k == 0:
+                    result.append(k)
+                    n = n/k
+            i = i + 1
+        result.sort()
+        return result
+    
+    @commands.command(name='소인수분해', enabled=False, aliases=['ㅅㅇㅅㅂㅎ', '수분해', 'factorization'], help='소인수분해 해줍니다', usage='[수]')
+    @can_use()
+    @commands.max_concurrency(2, per=commands.BucketType.user)
+    @commands.cooldown(1.0, 7, commands.BucketType.user)
+    async def _factorization(self, ctx, number: int):
+        result_list = [str(i) for i in await self.primeFactor(number)]
+        result = []
+        while result_list != []:
+            first = result_list[0]
+            result.append(f'{first}^{result_list.count(first)}')
+            while True:
+                if not first in result_list: break
+                result_list.remove(first)
+        await sendEmbed(ctx=ctx, title='소인수분해', content=' × '.join(result))
 
 def setup(bot):
     bot.add_cog(Math(bot))
