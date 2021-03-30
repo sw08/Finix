@@ -89,7 +89,7 @@ class Main(commands.Cog, name='잡다한것'):
     async def _channelInfo(self, ctx, channel:discord.TextChannel=None):
         if channel is None:
             channel = ctx.channel
-        message = (await channel.history().flatten(oldest_first=True))[0]
+        message = (await channel.history(oldest_first=True)).flatten()[0]
         await sendEmbed(ctx=ctx, title=f'{channel.name} 채널의 첫 메시지', content=f'[여기를 클릭하세요](https://discord.com/channels/{ctx.guild.id}/{ctx.channel.id}/{message.id})')
 
 def setup(bot):

@@ -55,7 +55,7 @@ class Support(commands.Cog, name='지원'):
             for i in range(len(cogs)):
                 cogs[i] = self.bot.get_cog(cogs[i])
             for i in cogs:
-                if i.commands is None: del cogs[cogs.index(i)]
+                if i.get_commands() == []: del cogs[cogs.index(i)]
             embed = discord.Embed(title=f'1/{len(cogs)+1}페이지 - 카테고리 목록', description='[]는 필수적인 값을, <>는 필수적이지 않은 값들을 의미합니다. 괄호들은 빼고 입력해 주세요!', color=embedcolor)
             embed.add_field(name='접두사', value=f'{self.bot.user.name}의 접두사는 `{"`, `".join(prefix)}`입니다')
             for i in cogs:
@@ -72,7 +72,6 @@ class Support(commands.Cog, name='지원'):
                             CMD.name = i.name + CMD.name
                             commandList.append(CMD)
                         del commandList[commandList.index(i)]'''
-
                 for i in commandList:
                     if i.enabled == False: pass
                     if i.usage is None:
@@ -82,7 +81,7 @@ class Support(commands.Cog, name='지원'):
                     if i.help is None:
                         embed.add_field(name=f'\n**{i.name}**', value=f'`{mainprefix}{i.name}{usage}`\n', inline=False)
                     else:
-                        embed.add_field(name=f'\n**{i.name}**', value=f'`{i.mainprefix}{i.name}{usage}`\n{i.help}\n', inline=False)
+                        embed.add_field(name=f'\n**{i.name}**', value=f'`{mainprefix}{i.name}{usage}`\n{i.help}\n', inline=False)
                 helps.append(embed)
             for i in range(len(helps)):
                 helps[i] = helps[i].set_footer(text=f'{ctx.author} | {mainprefix}도움', icon_url=ctx.author.avatar_url)

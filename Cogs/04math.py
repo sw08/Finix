@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 from Tools.func import can_use, sendEmbed, warn
+from Tools.var import mainprefix
 from math import sqrt
 import json
 
@@ -55,7 +56,7 @@ class Math(commands.Cog, name='수학'):
     async def _linearEquation(self, ctx, n1:float, n2:float):
         await sendEmbed(ctx=ctx, title='결과', content=f'해: {-1 * n2 / n1}')
     
-    @commands.command(name='조립제법', aliases=['ㅈㄹㅈㅂ', 'assemblyMethod', '조립 제법'], help='조립제법을 계산해줘요! 계수들은 |로 구분해 넣어주세요', usage='[일차방정식의 해] [다차방정식의 계수들]')
+    @commands.command(name='조립제법', aliases=['ㅈㄹㅈㅂ', 'assemblyMethod', '조립 제법'], help='조립제법을 실행합니다. 계수들은 |로 구분해 넣어주십시오', usage='[일차방정식의 해] [다차방정식의 계수들]')
     @commands.cooldown(1.0, 7, commands.BucketType.user)
     @commands.max_concurrency(5, per=commands.BucketType.default, wait=True)
     @can_use()
@@ -73,6 +74,13 @@ class Math(commands.Cog, name='수학'):
         content.append(f'**상수항**은 `{result[-2]}`')
         content.append(f'**나머지**는 `{result[-1]}`입니다')
         await sendEmbed(ctx=ctx, title='조립제법 결과', content=', '.join(content) + '입니다')
+    
+    @commands.group('분수계산', aliases=['ㅂㅅㄱㅅ', '분수', 'fraction'], enabled=False, help='분수 관련 계산을 합니다', usage='<통분/약분/곱셈/나눗셈/덧셈/뺄셈>')
+    @can_use()
+    @commands.max_concurrency(5, per=commands.BucketType.default, wait=True)
+    @commands.cooldown(1.0, 5, commands.BucketType.user)
+    async def _fraction(self, ctx):
+        await sendEmbed(ctx=ctx, title='분수 관련 명령어들', content=f'`{mainprefix}분수계산 <통분/약분/곱셈/나눗셈/덧셈/뺄셈>`')
 
 def setup(bot):
     bot.add_cog(Math(bot))

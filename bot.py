@@ -114,6 +114,12 @@ async def on_error(event, *args, **kwargs):
     exc = sys.exc_info()
     logger.error(f'{event}에서 에러 발생: {exc}\n{datetime.now()}\n')
 
+@bot.before_invoke
+async def before_command(ctx):
+    if commands.is_owner():
+        ctx.command.reset_cooldown(ctx)
+    await ctx.trigger_typing()
+
 @bot.event
 async def on_command_error(ctx, error):
     global logger
@@ -137,7 +143,6 @@ async def on_command_error(ctx, error):
         await warn(ctx=ctx, content='저런. 봇에게 권한을 제대로 주지 않으셨군요')
     else:
         await errorlog(ctx=ctx, error=error, bot=bot)
-    logger.error(f'에러: {ctx.author.id} ({ctx.author})\n\n{error}\n\n{datetime.now()}\n')
-    print('dd')
+    logger.error(f'에러: {ctx.author.id} ({ctx.author})\n\n{error}\n\n{datetime.now()}\n')  
 
 bot.run(token)
