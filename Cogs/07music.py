@@ -37,7 +37,7 @@ class Music(commands.Cog):
         try: await ctx.author.voice.channel.connect()
         except: pass
         if not isdir('Music'): makedirs('Music')
-        if isfile(f'Music/{ctx.author.id}.m4a'): remove(f'Music/{ctx.author.id}.m4a')
+        if isfile(f'Music/{ctx.guild.id}_first.m4a'): remove(f'Music/{ctx.guild.id}_first.m4a')
         ydl_opts = {
         'format': 'bestaudio/best',
         'postprocessors': [{
@@ -52,11 +52,18 @@ class Music(commands.Cog):
                 ydl.download([url])
             info = ydl.extract_info(url, download=False) # 유튜브에 저장된 파일명을 받아옵니다.
             filename = ydl.prepare_filename(info)
-            rename('.'.join(filename.split('.')[:-1]) + '.m4a', f'Music/{ctx.author.id}.m4a')
+            rename('.'.join(filename.split('.')[:-1]) + '.m4a', f'Music/{ctx.guild.id}_first.m4a')
         except Exception as error:
             await warn(ctx=ctx, content='재생을 위해 다운로드 중 에러가 발생했어요.')
             raise error
-        ctx.voice_client.play(discord.FFmpegPCMAudio(f'Music/{ctx.author.id}.m4a'))
+        ctx.voice_client.play(discord.FFmpegPCMAudio(f'Music/{ctx.guild.id}_first.m4a'))
+        
+    @commands.group('재생목록', invoke_without_command=True)
+    @can_use()
+    async def playlist(self, ctx):
+        await sendEmbed(ctx=ctx, title='재생목록', content=f'{mainprefix}재생목록 (추가/제거/리셋)')
+    
+    @
 
 def setup(bot):
     bot.add_cog(Music(bot))
