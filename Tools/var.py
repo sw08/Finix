@@ -1,7 +1,7 @@
 prefix = ['"', "''"]
 mainprefix = "''"
 
-embedcolor = 0x0000ff
-errorcolor = 0xff0000
+embedcolor = 0x0000FF
+errorcolor = 0xFF0000
 
-version = '20210327'
+version = "20210327"
